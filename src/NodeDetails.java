@@ -15,7 +15,7 @@ public class NodeDetails extends JDialog {
         this.setVisible(true);
     }
 
-    public Node getStoredNode(){
+    public Station getStoredNode(){
         return storedNode;
     }
 
@@ -72,7 +72,7 @@ public class NodeDetails extends JDialog {
             //set component bounds (only needed by Absolute Positioning)
             tbName.setBounds (115, 55, 100, 25);
             cbType.setBounds (115, 10, 100, 25);
-            jcomp3.setBounds (10, 10, 100, 25);
+            jcomp3.setBounds(10, 10, 100, 25);
             jcomp4.setBounds (10, 55, 100, 25);
             btnOK.setBounds (50, 90, 100, 25);
             btnCancel.setBounds (155, 90, 100, 25);

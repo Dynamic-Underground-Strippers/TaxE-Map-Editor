@@ -14,7 +14,7 @@ public class GUI extends JFrame {
 	Image mapImage;
 	String text = "";
 	DecimalFormat df = new DecimalFormat("#.##");
-	ArrayList<NodeDetails> nodes = new ArrayList<NodeDetails>();
+	ArrayList<Station> nodes = new ArrayList<Station>();
 
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
@@ -30,6 +30,9 @@ public class GUI extends JFrame {
 					nodes.remove(nodes.size() - 1);
 					repaint();
 				}
+				if (e.getKeyCode() == KeyEvent.VK_E){
+					EditNodes editDialog = new EditNodes(nodes);
+				}
 			}
 
 			@Override
@@ -43,7 +46,7 @@ public class GUI extends JFrame {
 				text = df.format(p.getX()) + "%, " + df.format(p.getY()) + "%";
 				NodeDetails nodeDialog = new NodeDetails(nodes.size(),p);
 				if (nodeDialog.getStoredNode() != null){
-					nodes.add(nodeDialog);
+					nodes.add(nodeDialog.getStoredNode());
 					repaint();
 				}
 			}
@@ -82,13 +85,13 @@ public class GUI extends JFrame {
 		g.setColor(Color.BLACK);
 		g.drawString(text, 50, 50);
 		g.setColor(Color.MAGENTA);
-		for (NodeDetails n : nodes) {
-			g.fillOval((int) (n.getStoredNode().getLocation().getX() * getWidth()) - 10, (int) (n.getStoredNode().getLocation().getY() * getHeight()) - 10, 20, 20);
+		for (Station n : nodes) {
+			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
 		}
 	}
 	public void rebalanceIDs(){
 		for (int i=0;i<nodes.size();i++){
-			nodes.get(i).getStoredNode().setId(i);
+			nodes.get(i).setId(i);
 		}
 	}
 }

@@ -1,16 +1,22 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
+import java.util.ArrayList;
 
-public class EditNodes {
+public class EditNodes extends JDialog{
 
-    public EditNodes(){
-        JFrame frame = new JFrame ("MyPanel");
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add (new MyPanel());
-        frame.pack();
-        frame.setVisible (true);
+    public EditNodes(ArrayList<Station> nodes) {
+        this.setModal(true);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        MyPanel contentPanel = new MyPanel(nodes);
+        JScrollPane scroll = new JScrollPane(contentPanel);
+        scroll.setAutoscrolls(true);
+        scroll.setViewportView(contentPanel);
+        this.getContentPane().add (scroll);
+       this.pack();
+       this.setVisible(true);
+
+
+
     }
 
     public class MyPanel extends JPanel {
@@ -20,31 +26,39 @@ public class EditNodes {
         private JTextField tbName;
         private JTextField tbLocation;
 
-        public MyPanel() {
+        public MyPanel(ArrayList<Station> nodes) {
             //construct components
-            lblNode = new JLabel ("Node");
-            lblName = new JLabel ("Name");
-            lblLocation = new JLabel ("Location");
-            tbName = new JTextField (5);
-            tbLocation = new JTextField (5);
-
-            //adjust size and set layout
-            setPreferredSize (new Dimension (217, 361));
             setLayout (null);
+            int starty = 10;
+            setPreferredSize (new Dimension (250,20 + nodes.size()*80));
+            for (Station n:nodes) {
+                lblNode = new JLabel("Node " + String.valueOf(n.getId()));
+                lblName = new JLabel("Name");
+                lblLocation = new JLabel("Location");
+                tbName = new JTextField(5);
+                tbName.setText(n.getName());
+                tbLocation = new JTextField(5);
+                tbLocation.setText(String.valueOf(n.getLocation().getX()*1920));
+                lblNode.setBounds(10, starty, 100, 25);
+                lblName.setBounds (25, starty+25, 100, 25);
+                lblLocation.setBounds (25, starty+55, 100, 25);
+                tbName.setBounds (100, starty+25, 100, 25);
+                tbLocation.setBounds (100, starty+55, 100, 25);
+                starty+= 80;
+                add (lblNode);
+                add (lblName);
+                add (lblLocation);
+                add (tbName);
+                add (tbLocation);
+            }
+            //adjust size and set layout
+
 
             //add components
-            add (lblNode);
-            add (lblName);
-            add (lblLocation);
-            add (tbName);
-            add (tbLocation);
+
 
             //set component bounds (only needed by Absolute Positioning)
-            lblNode.setBounds (10, 10, 100, 25);
-            lblName.setBounds (25, 35, 100, 25);
-            lblLocation.setBounds (25, 65, 100, 25);
-            tbName.setBounds (100, 35, 100, 25);
-            tbLocation.setBounds (100, 65, 100, 25);
+
         }
     }
 }
