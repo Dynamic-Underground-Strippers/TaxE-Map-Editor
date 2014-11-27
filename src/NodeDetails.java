@@ -26,8 +26,6 @@ public class NodeDetails extends JDialog {
         private JLabel jcomp4;
         private JButton btnOK;
         private JButton btnCancel;
-        private Point location;
-        private int id;
 
         public void Close(){
             NodeDetails.this.setVisible(false);

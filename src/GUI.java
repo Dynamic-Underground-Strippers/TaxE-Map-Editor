@@ -86,7 +86,9 @@ public class GUI extends JFrame {
 			g.fillOval((int) (n.getStoredNode().getLocation().getX() * getWidth()) - 10, (int) (n.getStoredNode().getLocation().getY() * getHeight()) - 10, 20, 20);
 		}
 	}
-	public void addNode(){
-
+	public void rebalanceIDs(){
+		for (int i=0;i<nodes.size();i++){
+			nodes.get(i).getStoredNode().setId(i);
+		}
 	}
 }

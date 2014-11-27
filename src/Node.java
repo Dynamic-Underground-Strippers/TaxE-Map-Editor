@@ -1,7 +1,7 @@
 
 
 public abstract class Node {
-    private final int id;
+    private int id;
     private final Point location;
     private final String name;
 
@@ -9,6 +9,10 @@ public abstract class Node {
         this.id = id;
         this.name = name;
         this.location = location;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
