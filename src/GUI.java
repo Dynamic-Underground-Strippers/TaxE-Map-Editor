@@ -8,25 +8,13 @@ import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 public class GUI extends JFrame {
 	Image mapImage;
 	String text = "";
 	DecimalFormat df = new DecimalFormat("#.##");
-	ArrayList<Point> points = new ArrayList<Point>();
-
-	class Point {
-		float x;
-		float y;
-
-		public Point(float x, float y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
+	ArrayList<NodeDetails> nodes = new ArrayList<NodeDetails>();
 
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
@@ -39,7 +27,7 @@ public class GUI extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
 				if (e.getKeyCode() == KeyEvent.VK_Z) {
-					points.remove(points.size() - 1);
+					nodes.remove(nodes.size() - 1);
 					repaint();
 				}
 			}
@@ -52,9 +40,12 @@ public class GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Point p = new Point((float) e.getX() / (float) getWidth(), (float) e.getY() / (float) getHeight());
-				points.add(p);
-				text = df.format(p.x) + "%, " + df.format(p.y) + "%";
-				repaint();
+				text = df.format(p.getX()) + "%, " + df.format(p.getY()) + "%";
+				NodeDetails nodeDialog = new NodeDetails(nodes.size(),p);
+				if (nodeDialog.getStoredNode() != null){
+					nodes.add(nodeDialog);
+					repaint();
+				}
 			}
 
 			@Override
@@ -77,7 +68,7 @@ public class GUI extends JFrame {
 
 			}
 		});
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setVisible(true);
@@ -91,8 +82,11 @@ public class GUI extends JFrame {
 		g.setColor(Color.BLACK);
 		g.drawString(text, 50, 50);
 		g.setColor(Color.MAGENTA);
-		for (Point p : points) {
-			g.fillOval((int) (p.x * getWidth()) - 10, (int) (p.y * getHeight()) - 10, 20, 20);
+		for (NodeDetails n : nodes) {
+			g.fillOval((int) (n.getStoredNode().getLocation().getX() * getWidth()) - 10, (int) (n.getStoredNode().getLocation().getY() * getHeight()) - 10, 20, 20);
 		}
+	}
+	public void addNode(){
+
 	}
 }
