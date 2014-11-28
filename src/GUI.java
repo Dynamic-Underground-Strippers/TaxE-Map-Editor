@@ -15,7 +15,8 @@ public class GUI extends JFrame {
 	String text = "";
 	DecimalFormat df = new DecimalFormat("#.##");
 	ArrayList<Station> nodes = new ArrayList<Station>();
-
+	public int screenWidth = getWidth();
+	public int screenHeight = getHeight();
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
@@ -32,6 +33,11 @@ public class GUI extends JFrame {
 				}
 				if (e.getKeyCode() == KeyEvent.VK_E){
 					EditNodes editDialog = new EditNodes(nodes);
+					if (editDialog.getNodeList().size()>0){
+						nodes = editDialog.getNodeList();
+						repaint();
+					}
+
 				}
 			}
 
