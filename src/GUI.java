@@ -19,7 +19,6 @@ public class GUI extends JFrame {
 	ArrayList<Station> nodes = new ArrayList<Station>();
 
 	public GUI() {
-		this.nodes = loadNodeList("nodes.json");
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
 			@Override
@@ -40,7 +39,14 @@ public class GUI extends JFrame {
 						repaint();
 					}
 					editDialog.dispose();
-
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S){
+					LoadFile loadDialog = new LoadFile();
+					if (loadDialog.okClicked){
+						nodes = loadDialog.getNodes();
+					}
+					loadDialog.dispose();
+					repaint();
 				}
 			}
 
@@ -98,28 +104,10 @@ public class GUI extends JFrame {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
 		}
 	}
+
 	public void rebalanceIDs(){
 		for (int i=0;i<nodes.size();i++){
 			nodes.get(i).setId(i);
 		}
-	}
-	private ArrayList<Station> loadNodeList(String fileName){
-		ArrayList<Station> loadedNodes = new ArrayList<Station>();
-		JSONParser parser = new JSONParser();
-		try {
-			Object obj = parser.parse(new FileReader(
-					fileName));
-			JSONArray nodeList = (JSONArray) obj;
-
-			for (int i =0; i<nodeList.size();i++){
-				JSONObject nodeJSON = (JSONObject) nodeList.get(i);
-				Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
-				loadedNodes.add(node);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return loadedNodes;
 	}
 }
