@@ -10,7 +10,6 @@ public class Point {
         String[] splitStr = str.split(",");
         this.x            = Float.parseFloat(splitStr[0].substring(1));
         this.y            = Float.parseFloat(splitStr[1].substring(0,splitStr[1].length() - 1));
-        System.out.print("lol");
     }
 
     public float getX() {

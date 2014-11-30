@@ -1,10 +1,12 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -15,9 +17,9 @@ public class GUI extends JFrame {
 	String text = "";
 	DecimalFormat df = new DecimalFormat("#.##");
 	ArrayList<Station> nodes = new ArrayList<Station>();
-	public int screenWidth = getWidth();
-	public int screenHeight = getHeight();
+
 	public GUI() {
+		this.nodes = loadNodeList("nodes.json");
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
 			@Override
@@ -37,6 +39,7 @@ public class GUI extends JFrame {
 						nodes = editDialog.getNodeList();
 						repaint();
 					}
+					editDialog.dispose();
 
 				}
 			}
@@ -99,5 +102,24 @@ public class GUI extends JFrame {
 		for (int i=0;i<nodes.size();i++){
 			nodes.get(i).setId(i);
 		}
+	}
+	private ArrayList<Station> loadNodeList(String fileName){
+		ArrayList<Station> loadedNodes = new ArrayList<Station>();
+		JSONParser parser = new JSONParser();
+		try {
+			Object obj = parser.parse(new FileReader(
+					fileName));
+			JSONArray nodeList = (JSONArray) obj;
+
+			for (int i =0; i<nodeList.size();i++){
+				JSONObject nodeJSON = (JSONObject) nodeList.get(i);
+				Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
+				loadedNodes.add(node);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return loadedNodes;
 	}
 }

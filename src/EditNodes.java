@@ -4,14 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
 
 public class EditNodes extends JDialog{
-    private ArrayList<Station> nodes = new ArrayList<Station>();
+    private ArrayList<Station> nodes;
+
     public EditNodes(ArrayList<Station> nodes) {
+        this.nodes = nodes;
         this.setModal(true);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-        MyPanel contentPanel = new MyPanel(nodes);
+        MyPanel contentPanel = new MyPanel(this.nodes);
         JScrollPane scroll = new JScrollPane(contentPanel);
         scroll.setAutoscrolls(true);
         scroll.setViewportView(contentPanel);
@@ -52,7 +57,6 @@ public class EditNodes extends JDialog{
                 add (lblNode);
                 add (lblName);
                 add (lblLocation);
-                //First tb at location 3
                 add (tbName);
                 add (tbLocation);
             }
