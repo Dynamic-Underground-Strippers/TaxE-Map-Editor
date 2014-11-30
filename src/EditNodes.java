@@ -1,9 +1,10 @@
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
+import org.json.simple.*;
 
 public class EditNodes extends JDialog{
     private ArrayList<Station> nodes = new ArrayList<Station>();
@@ -119,9 +120,35 @@ public class EditNodes extends JDialog{
             EditNodes.this.setVisible(false);
         }
     }
+    private void saveNodeList() throws IOException{
+        JSONArray nodeListJSON = new JSONArray();
+        for (Station n: this.nodes){
+            JSONObject node = new JSONObject();
+            node.put("name",n.getName());
+            node.put("location",n.getLocation().toString());
+            nodeListJSON.add(node);
+        }
+        FileWriter file = new FileWriter("nodes.json");
+        try {
+            file.write(nodeListJSON.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } finally {
+            file.flush();
+            file.close();
+        }
+    }
+
 
     private void setNodeList(ArrayList<Station> nodes){
         this.nodes = nodes;
+        try {
+            saveNodeList();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Station> getNodeList(){
