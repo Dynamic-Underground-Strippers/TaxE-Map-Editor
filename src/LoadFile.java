@@ -60,6 +60,12 @@ public class LoadFile extends JDialog {
                     }
                 }
             });
+            btnCancel.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   close();
+                }
+            });
             tbFileName.setBounds (25, 35, 470, 25);
             jcomp2.setBounds (25, 5, 240, 30);
             btnBrowse.setBounds (505, 35, 100, 25);
