@@ -2,9 +2,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.FileReader;
 import java.text.DecimalFormat;
@@ -14,10 +12,9 @@ import javax.swing.*;
 
 public class GUI extends JFrame {
 	Image mapImage;
-	String text = "";
-	DecimalFormat df = new DecimalFormat("#.##");
 	ArrayList<Station> nodes = new ArrayList<Station>();
 	boolean ctrlClicked = false;
+	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
@@ -47,20 +44,7 @@ public class GUI extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_S) {
 					if (ctrlClicked){
 						SaveFile saveDialog = new SaveFile(nodes);
-						if (saveDialog.okClicked){
-							nodes = saveDialog.getNodes();
-						}
 						saveDialog.dispose();
-					}
-				}
-				if (e.getKeyCode() == KeyEvent.VK_E){
-					if (ctrlClicked) {
-						EditNodes editDialog = new EditNodes(nodes);
-						if (editDialog.getNodeList().size() > 0) {
-							nodes = editDialog.getNodeList();
-							repaint();
-						}
-						editDialog.dispose();
 					}
 				}
 				if (e.getKeyCode() == KeyEvent.VK_L) {
@@ -88,15 +72,26 @@ public class GUI extends JFrame {
 		addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Point p = new Point((float) e.getX() / (float) getWidth(), (float) e.getY() / (float) getHeight());
-				text = df.format(p.getX()) + "%, " + df.format(p.getY()) + "%";
-				NodeDetails nodeDialog = new NodeDetails(nodes.size(),p);
-				if (nodeDialog.getStoredNode() != null){
-					nodes.add(nodeDialog.getStoredNode());
-					repaint();
+				boolean rectClicked = false;
+				for (Rectangle rect : nodeClicks) {
+					if (rect.contains(e.getPoint())) {
+						rectClicked = true;
+						if (e.getButton() == MouseEvent.BUTTON1) {
+							//Create connection
+						} else if (e.getButton() == MouseEvent.BUTTON3) {
+							//Edit node
+						}
+					}
+				}
+				if (!rectClicked) {
+					Point p = new Point((float) e.getX() / (float) getWidth(), (float) e.getY() / (float) getHeight());
+					NodeDetails nodeDialog = new NodeDetails(nodes.size(), p);
+					if (nodeDialog.getStoredNode() != null) {
+						nodes.add(nodeDialog.getStoredNode());
+						repaint();
+					}
 				}
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -125,14 +120,16 @@ public class GUI extends JFrame {
 
 	@Override
 	public void paint(Graphics g) {
+		nodeClicks.clear();
 		g.clearRect(0, 0, getWidth(), getHeight());
 		int imageWidth = (int) ((float) mapImage.getWidth(this) * ((float) getHeight() / (float) mapImage.getHeight(this)));
 		g.drawImage(mapImage, getWidth() - imageWidth, 0, imageWidth, getHeight(), this);
 		g.setColor(Color.BLACK);
-		g.drawString(text, 50, 50);
 		g.setColor(Color.MAGENTA);
 		for (Station n : nodes) {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
+			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20 );
+			nodeClicks.add(rect);
 		}
 	}
 

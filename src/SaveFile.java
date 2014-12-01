@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class SaveFile extends JDialog {
@@ -47,9 +45,9 @@ public class SaveFile extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     final JFileChooser fc = new JFileChooser();
-                    Path currentRelativePath = Paths.get("");
+/*                    Path currentRelativePath = Paths.get("");
                     String s = currentRelativePath.toAbsolutePath().toString();
-                    fc.setCurrentDirectory(new File(s));
+                    fc.setCurrentDirectory(new File(s));*/
                     fc.setSelectedFile(new File("nodes.json"));
                     int returnVal = fc.showSaveDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -61,13 +59,9 @@ public class SaveFile extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        if (new File(tbFileName.getText()).isFile()) {
                             save(tbFileName.getText());
                             okClicked = true;
                             close();
-                        } else {
-
-                        }
                     } catch(Exception ex){
                         ex.printStackTrace();
                     }
