@@ -15,7 +15,10 @@ public class GUI extends JFrame {
 	ArrayList<Station> nodes = new ArrayList<Station>();
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
+	Rectangle mostRecentRect=null;
+	ArrayList<Line> lines;
 	public GUI() {
+		lines = new ArrayList<Line>();
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
 			@Override
@@ -77,7 +80,15 @@ public class GUI extends JFrame {
 					if (rect.contains(e.getPoint())) {
 						rectClicked = true;
 						if (e.getButton() == MouseEvent.BUTTON1) {
-							//Create connection
+							if (mostRecentRect == null){
+								mostRecentRect = rect;
+							}else{
+								int mostRecentIndex = nodeClicks.indexOf(mostRecentRect);
+								int currentIndex = nodeClicks.indexOf(rect);
+								lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation()));
+								mostRecentRect = null;
+								repaint();
+							}
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
 							//Edit node
 						}
@@ -130,6 +141,9 @@ public class GUI extends JFrame {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20 );
 			nodeClicks.add(rect);
+		}
+		for (Line l: lines){
+			g.drawLine((int) (l.getStart().getX() * getWidth()),(int) (l.getStart().getY() * getHeight()),(int) (l.getEnd().getX() * getWidth()),(int) (l.getEnd().getY() * getHeight()));
 		}
 	}
 
