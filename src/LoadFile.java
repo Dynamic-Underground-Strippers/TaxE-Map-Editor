@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class LoadFile extends JDialog {
@@ -42,6 +44,9 @@ public class LoadFile extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     final JFileChooser fc = new JFileChooser();
+                    Path currentRelativePath = Paths.get("");
+                    String s = currentRelativePath.toAbsolutePath().toString();
+                    fc.setCurrentDirectory(new File(s));
                     int returnVal = fc.showOpenDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         tbFileName.setText(fc.getSelectedFile().getAbsolutePath().toString());

@@ -46,6 +46,25 @@ public class GUI extends JFrame {
 				}
 				if (e.getKeyCode() == KeyEvent.VK_S) {
 					if (ctrlClicked){
+						SaveFile saveDialog = new SaveFile(nodes);
+						if (saveDialog.okClicked){
+							nodes = saveDialog.getNodes();
+						}
+						saveDialog.dispose();
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_E){
+					if (ctrlClicked) {
+						EditNodes editDialog = new EditNodes(nodes);
+						if (editDialog.getNodeList().size() > 0) {
+							nodes = editDialog.getNodeList();
+							repaint();
+						}
+						editDialog.dispose();
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_L) {
+					if (ctrlClicked){
 						LoadFile loadDialog = new LoadFile();
 						if (loadDialog.okClicked){
 							nodes = loadDialog.getNodes();

@@ -7,14 +7,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SaveFile extends JDialog {
     public boolean okClicked = false;
     private ArrayList<Station> nodes;
-    public SaveFile(){
+    public SaveFile(ArrayList<Station> nodes){
+        this.nodes = nodes;
         this.setModal(true);
-        this.getContentPane().add (new SaveFile());
+        this.getContentPane().add (new SavePanel());
         this.pack();
         this.setVisible (true);
     }
@@ -42,21 +45,26 @@ public class SaveFile extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     final JFileChooser fc = new JFileChooser();
-                    int returnVal = fc.showOpenDialog(getParent());
+                    fc.setSelectedFile(new File("nodes.json"));
+                    int returnVal = fc.showSaveDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        tbFileName.setText(fc.getSelectedFile().getAbsolutePath().toString());
+                        tbFileName.setText(fc.getSelectedFile().getAbsolutePath());
                     }
                 }
             });
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (new File(tbFileName.getText()).isFile()) {
-                        load(tbFileName.getText());
-                        okClicked = true;
-                        close();
-                    } else {
+                    try {
+                        if (new File(tbFileName.getText()).isFile()) {
+                            save(tbFileName.getText());
+                            okClicked = true;
+                            close();
+                        } else {
 
+                        }
+                    } catch(Exception ex){
+                        ex.printStackTrace();
                     }
                 }
             });
@@ -76,26 +84,27 @@ public class SaveFile extends JDialog {
             SaveFile.this.setVisible(false);
         }
     }
-    private void load(String fileName){
-        ArrayList<Station> loadedNodes = new ArrayList<Station>();
-        JSONParser parser = new JSONParser();
-        try {
-            Object obj = parser.parse(new FileReader(
-                    fileName));
-            JSONArray nodeList = (JSONArray) obj;
-
-            for (int i =0; i<nodeList.size();i++){
-                JSONObject nodeJSON = (JSONObject) nodeList.get(i);
-                Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
-                loadedNodes.add(node);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void save(String fileName) throws IOException {
+        JSONArray nodeListJSON = new JSONArray();
+        for (Station n: this.nodes){
+            JSONObject node = new JSONObject();
+            node.put("name",n.getName());
+            node.put("location",n.getLocation().toString());
+            nodeListJSON.add(node);
         }
-        this.nodes = loadedNodes;
+        FileWriter file = new FileWriter(fileName);
+        try {
+            file.write(nodeListJSON.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } finally {
+            file.flush();
+            file.close();
+        }
     }
     public ArrayList<Station> getNodes(){
         return this.nodes;
     }
+
 }
