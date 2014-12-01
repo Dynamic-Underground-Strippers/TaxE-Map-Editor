@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class SaveFile extends JDialog {
@@ -45,6 +47,9 @@ public class SaveFile extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     final JFileChooser fc = new JFileChooser();
+                    Path currentRelativePath = Paths.get("");
+                    String s = currentRelativePath.toAbsolutePath().toString();
+                    fc.setCurrentDirectory(new File(s));
                     fc.setSelectedFile(new File("nodes.json"));
                     int returnVal = fc.showSaveDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -85,22 +90,26 @@ public class SaveFile extends JDialog {
         }
     }
     private void save(String fileName) throws IOException {
-        JSONArray nodeListJSON = new JSONArray();
-        for (Station n: this.nodes){
-            JSONObject node = new JSONObject();
-            node.put("name",n.getName());
-            node.put("location",n.getLocation().toString());
-            nodeListJSON.add(node);
-        }
-        FileWriter file = new FileWriter(fileName);
-        try {
-            file.write(nodeListJSON.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (this.nodes.size()>0) {
+            JSONArray nodeListJSON = new JSONArray();
+            for (Station n : this.nodes) {
+                JSONObject node = new JSONObject();
+                node.put("name", n.getName());
+                node.put("location", n.getLocation().toString());
+                nodeListJSON.add(node);
+            }
+            FileWriter file = new FileWriter(fileName);
+            try {
+                file.write(nodeListJSON.toJSONString());
+            } catch (IOException e) {
+                e.printStackTrace();
 
-        } finally {
-            file.flush();
-            file.close();
+            } finally {
+                file.flush();
+                file.close();
+            }
+        }else{
+            //Print message or return error if nothing to save
         }
     }
     public ArrayList<Station> getNodes(){

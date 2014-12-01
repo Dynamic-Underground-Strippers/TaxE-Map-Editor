@@ -49,7 +49,7 @@ public class LoadFile extends JDialog {
                     fc.setCurrentDirectory(new File(s));
                     int returnVal = fc.showOpenDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        tbFileName.setText(fc.getSelectedFile().getAbsolutePath().toString());
+                        tbFileName.setText(fc.getSelectedFile().getAbsolutePath());
                     }
                 }
             });
@@ -61,7 +61,7 @@ public class LoadFile extends JDialog {
                         okClicked = true;
                         close();
                     } else {
-
+                        // throw error or return message to user
                     }
                 }
             });
