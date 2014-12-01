@@ -17,7 +17,7 @@ public class GUI extends JFrame {
 	String text = "";
 	DecimalFormat df = new DecimalFormat("#.##");
 	ArrayList<Station> nodes = new ArrayList<Station>();
-
+	boolean ctrlClicked = false;
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
@@ -29,29 +29,41 @@ public class GUI extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
 				if (e.getKeyCode() == KeyEvent.VK_Z) {
-					nodes.remove(nodes.size() - 1);
-					repaint();
-				}
-				if (e.getKeyCode() == KeyEvent.VK_E){
-					EditNodes editDialog = new EditNodes(nodes);
-					if (editDialog.getNodeList().size()>0){
-						nodes = editDialog.getNodeList();
+					if (ctrlClicked) {
+						nodes.remove(nodes.size() - 1);
 						repaint();
 					}
-					editDialog.dispose();
 				}
-				if (e.getKeyCode() == KeyEvent.VK_S){
-					LoadFile loadDialog = new LoadFile();
-					if (loadDialog.okClicked){
-						nodes = loadDialog.getNodes();
+				if (e.getKeyCode() == KeyEvent.VK_E){
+					if (ctrlClicked) {
+						EditNodes editDialog = new EditNodes(nodes);
+						if (editDialog.getNodeList().size() > 0) {
+							nodes = editDialog.getNodeList();
+							repaint();
+						}
+						editDialog.dispose();
 					}
-					loadDialog.dispose();
-					repaint();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (ctrlClicked){
+						LoadFile loadDialog = new LoadFile();
+						if (loadDialog.okClicked){
+							nodes = loadDialog.getNodes();
+						}
+						loadDialog.dispose();
+						repaint();
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					ctrlClicked = true;
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					ctrlClicked = false;
+				}
 			}
 		});
 		addMouseListener(new MouseListener() {
