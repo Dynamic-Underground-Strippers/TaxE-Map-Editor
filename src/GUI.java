@@ -16,8 +16,9 @@ public class GUI extends JFrame {
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	Rectangle mostRecentRect=null;
-	Connection[][] connections = null;
+	Connection[][] connections;
 	ArrayList<Line> lines;
+	boolean altClicked = false;
 	public GUI() {
 		lines = new ArrayList<Line>();
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
@@ -28,14 +29,14 @@ public class GUI extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
-				if (e.getKeyCode() == KeyEvent.VK_Z) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) mostRecentRect = null;
+				else if (e.getKeyCode() == KeyEvent.VK_Z) {
 					if (ctrlClicked) {
 						nodes.remove(nodes.size() - 1);
 						repaint();
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_E){
+				else if (e.getKeyCode() == KeyEvent.VK_E){
 					if (ctrlClicked) {
 						EditNodes editDialog = new EditNodes(nodes);
 						if (editDialog.getNodeList().size() > 0) {
@@ -45,13 +46,13 @@ public class GUI extends JFrame {
 						editDialog.dispose();
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_S) {
+				else if (e.getKeyCode() == KeyEvent.VK_S) {
 					if (ctrlClicked){
 						SaveFile saveDialog = new SaveFile(nodes);
 						saveDialog.dispose();
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_L) {
+				else if (e.getKeyCode() == KeyEvent.VK_L) {
 					if (ctrlClicked){
 						LoadFile loadDialog = new LoadFile();
 						if (loadDialog.okClicked){
@@ -61,7 +62,7 @@ public class GUI extends JFrame {
 						repaint();
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+				else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
 					ctrlClicked = true;
 				}
 			}
@@ -83,13 +84,15 @@ public class GUI extends JFrame {
 						if (e.getButton() == MouseEvent.BUTTON1) {
 							if (mostRecentRect == null){
 								mostRecentRect = rect;
-							}else{
+							}else if (rect!=mostRecentRect){
 								int mostRecentIndex = nodeClicks.indexOf(mostRecentRect);
 								int currentIndex = nodeClicks.indexOf(rect);
-								lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation()));
 								mostRecentRect = null;
 								Connection tempConnection = new ConnectionDetails().getStoredConnection();
-								repaint();
+								if (tempConnection != null){
+									lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation()));
+									repaint();
+								}
 							}
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
 							//Edit node
@@ -104,6 +107,7 @@ public class GUI extends JFrame {
 						nodes.add(nodeDialog.getStoredNode());
 						repaint();
 					}
+
 				}
 			}
 			@Override

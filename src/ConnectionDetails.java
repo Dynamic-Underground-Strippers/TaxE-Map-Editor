@@ -28,9 +28,7 @@ public class ConnectionDetails extends JDialog {
         public void Close(){
             ConnectionDetails.this.setVisible(false);
         }
-        public void Dispose(){
-            ConnectionDetails.this.dispose();
-        }
+
         public NodeDetailsPanel() {
             tbDistance = new JTextField (5);
             jcomp3 = new JLabel ("Distance:");
@@ -46,7 +44,7 @@ public class ConnectionDetails extends JDialog {
             btnCancel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    NodeDetailsPanel.this.Dispose();
+                    Close();
                 }
             });
             //adjust size and set layout
