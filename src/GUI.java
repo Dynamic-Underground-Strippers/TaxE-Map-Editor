@@ -16,6 +16,7 @@ public class GUI extends JFrame {
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	Rectangle mostRecentRect=null;
+	Connection[][] connections = null;
 	ArrayList<Line> lines;
 	public GUI() {
 		lines = new ArrayList<Line>();
@@ -87,10 +88,12 @@ public class GUI extends JFrame {
 								int currentIndex = nodeClicks.indexOf(rect);
 								lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation()));
 								mostRecentRect = null;
+								Connection tempConnection = new ConnectionDetails().getStoredConnection();
 								repaint();
 							}
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
 							//Edit node
+
 						}
 					}
 				}
