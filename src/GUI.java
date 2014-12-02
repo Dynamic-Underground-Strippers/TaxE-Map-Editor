@@ -91,6 +91,9 @@ public class GUI extends JFrame {
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
 							int currentIndex = nodeClicks.indexOf(rect);
 							EditNode editDialog = new EditNode(nodes.get(currentIndex));
+							if (editDialog.getStoredNode()!=null){
+								nodes.set(currentIndex,editDialog.getStoredNode());
+							}
 
 						}
 					}

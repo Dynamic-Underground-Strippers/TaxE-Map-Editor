@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.*;
 public class EditNode extends JDialog{
-    private Node storedNode=null;
+    private Station storedNode=null;
     public EditNode(Station node){
         this.storedNode = node;
         this.setModal(true);
@@ -15,6 +15,7 @@ public class EditNode extends JDialog{
     private void setStoredNode(Station node){
         this.storedNode = node;
     }
+    public Station getStoredNode(){ return this.storedNode;}
     public class MyPanel extends JPanel {
 
         private JLabel jcomp1;
