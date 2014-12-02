@@ -2,17 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-
-public class EditNodes extends JDialog{
+public class EditAllNodes extends JDialog{
     private ArrayList<Station> nodes;
 
-    public EditNodes(ArrayList<Station> nodes) {
+    public EditAllNodes(ArrayList<Station> nodes) {
         this.nodes = nodes;
         this.setModal(true);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
@@ -117,11 +112,11 @@ public class EditNodes extends JDialog{
         }
 
         private void Dispose(){
-            EditNodes.this.dispose();
+            EditAllNodes.this.dispose();
         }
 
         private void Close(){
-            EditNodes.this.setVisible(false);
+            EditAllNodes.this.setVisible(false);
         }
     }
 

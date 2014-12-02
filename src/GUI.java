@@ -1,11 +1,5 @@
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileReader;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -38,7 +32,7 @@ public class GUI extends JFrame {
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_E){
 					if (ctrlClicked) {
-						EditNodes editDialog = new EditNodes(nodes);
+						EditAllNodes editDialog = new EditAllNodes(nodes);
 						if (editDialog.getNodeList().size() > 0) {
 							nodes = editDialog.getNodeList();
 							repaint();
@@ -90,12 +84,13 @@ public class GUI extends JFrame {
 								mostRecentRect = null;
 								Connection tempConnection = new ConnectionDetails().getStoredConnection();
 								if (tempConnection != null){
-									lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation()));
+									lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation(),tempConnection.getDistance()));
 									repaint();
 								}
 							}
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
-							//Edit node
+							int currentIndex = nodeClicks.indexOf(rect);
+							EditNode editDialog = new EditNode(nodes.get(currentIndex));
 
 						}
 					}
@@ -143,6 +138,7 @@ public class GUI extends JFrame {
 		int imageWidth = (int) ((float) mapImage.getWidth(this) * ((float) getHeight() / (float) mapImage.getHeight(this)));
 		g.drawImage(mapImage, getWidth() - imageWidth, 0, imageWidth, getHeight(), this);
 		g.setColor(Color.BLACK);
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
 		g.setColor(Color.MAGENTA);
 		for (Station n : nodes) {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
@@ -150,7 +146,8 @@ public class GUI extends JFrame {
 			nodeClicks.add(rect);
 		}
 		for (Line l: lines){
-			g.drawLine((int) (l.getStart().getX() * getWidth()),(int) (l.getStart().getY() * getHeight()),(int) (l.getEnd().getX() * getWidth()),(int) (l.getEnd().getY() * getHeight()));
+			g.drawLine((int) (l.getStart().getX() * getWidth()), (int) (l.getStart().getY() * getHeight()), (int) (l.getEnd().getX() * getWidth()), (int) (l.getEnd().getY() * getHeight()));
+			g.drawString(String.valueOf(l.getDistance()),(int) (l.getMidPoint().getX()*getWidth()),(int) (l.getMidPoint().getY()* getHeight()));
 		}
 	}
 
