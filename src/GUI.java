@@ -89,11 +89,13 @@ public class GUI extends JFrame {
 								int mostRecentIndex = nodeClicks.indexOf(mostRecentRect);
 								int currentIndex = nodeClicks.indexOf(rect);
 								mostRecentRect = null;
-								Connection tempConnection = new ConnectionDetails().getStoredConnection();
-								if (tempConnection != null){
-									connections.get(mostRecentIndex).set(currentIndex, tempConnection);
-									connections.get(currentIndex).set(mostRecentIndex,tempConnection);
-									repaint();
+								if (connections.get(mostRecentIndex).get(currentIndex)==null) {
+									Connection tempConnection = new ConnectionDetails().getStoredConnection();
+									if (tempConnection != null) {
+										connections.get(mostRecentIndex).set(currentIndex, tempConnection);
+										connections.get(currentIndex).set(mostRecentIndex, tempConnection);
+										repaint();
+									}
 								}
 							}
 						} else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -112,16 +114,18 @@ public class GUI extends JFrame {
 						}
 					}
 				}
-				for (Rect rect : connectionClicks) {
-					if (rect.contains(e.getPoint())) {
-						rectClicked = true;
-						if (e.getButton() == MouseEvent.BUTTON3) {
-							Connection clickedConnection = connections.get(rect.getStartIndex()).get(rect.getEndIndex());
-							EditConnection editConnection = new EditConnection(clickedConnection);
-							connections.get(rect.getStartIndex()).set(rect.getEndIndex(),editConnection.getStoredConnection());
-							connections.get(rect.getEndIndex()).set(rect.getStartIndex(),editConnection.getStoredConnection());
-							editConnection.dispose();
-							repaint();
+				if (!rectClicked) {
+					for (Rect rect : connectionClicks) {
+						if (rect.contains(e.getPoint())) {
+							rectClicked = true;
+							if (e.getButton() == MouseEvent.BUTTON3) {
+								Connection clickedConnection = connections.get(rect.getStartIndex()).get(rect.getEndIndex());
+								EditConnection editConnection = new EditConnection(clickedConnection);
+								connections.get(rect.getStartIndex()).set(rect.getEndIndex(), editConnection.getStoredConnection());
+								connections.get(rect.getEndIndex()).set(rect.getStartIndex(), editConnection.getStoredConnection());
+								editConnection.dispose();
+								repaint();
+							}
 						}
 					}
 				}
@@ -178,6 +182,8 @@ public class GUI extends JFrame {
 		g.drawImage(mapImage, getWidth() - imageWidth, 0, imageWidth, getHeight(), this);
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+		FontMetrics metrics = g.getFontMetrics(g.getFont());
+		int fontHeight = metrics.getHeight();
 		g.setColor(Color.MAGENTA);
 		for (Station n : nodes) {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
@@ -185,15 +191,16 @@ public class GUI extends JFrame {
 			nodeClicks.add(rect);
 		}
 		for (int x=0; x<nodes.size();x++) {
-			for (int y = 0; y < nodes.size(); y++) {
+			for (int y = x; y < nodes.size(); y++) {
 				if (connections.get(x).get(y) != null) {
 					int startx = (int) nodeClicks.get(x).getLocation().getX() + 10;
 					int starty = (int) nodeClicks.get(x).getLocation().getY() + 10;
 					int endx = (int) nodeClicks.get(y).getLocation().getX() + 10;
 					int endy = (int) nodeClicks.get(y).getLocation().getY() + 10;
+					int fontWidth =  metrics.stringWidth(String.valueOf(connections.get(x).get(y).getDistance()));
 					g.setColor(Color.BLUE);
 					g.drawLine(startx, starty, endx, endy);
-					Rect rect = new Rect((startx + endx) / 2,(starty + endy) / 2,20,20,x,y);
+					Rect rect = new Rect(((startx + endx) / 2),(((starty + endy) / 2)-fontHeight)+3,fontWidth,fontHeight,x,y);
 					connectionClicks.add(rect);
 					g.setColor(Color.BLACK);
 					g.drawString(String.valueOf(connections.get(x).get(y).getDistance()), (startx + endx) / 2, (starty + endy) / 2);
