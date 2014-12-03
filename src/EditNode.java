@@ -48,6 +48,13 @@ public class EditNode extends JDialog{
                     Close();
                 }
             });
+            btnDelete.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setStoredNode(null);
+                    Close();
+                }
+            });
             add(jcomp1);
             add (tbName);
             add (jcomp3);

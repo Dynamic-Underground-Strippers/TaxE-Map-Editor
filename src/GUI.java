@@ -10,11 +10,9 @@ public class GUI extends JFrame {
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	Rectangle mostRecentRect=null;
-	Connection[][] connections;
-	ArrayList<Line> lines;
-	boolean altClicked = false;
+	ArrayList<Rectangle> connectionClicks = new ArrayList<Rectangle>();
+	ArrayList<ArrayList<Connection>> connections = new ArrayList<ArrayList<Connection>>();
 	public GUI() {
-		lines = new ArrayList<Line>();
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
 			@Override
@@ -53,6 +51,14 @@ public class GUI extends JFrame {
 							nodes = loadDialog.getNodes();
 						}
 						loadDialog.dispose();
+						//TODO: Make this load in the connections, later on though
+						ArrayList<Connection> tempList = new ArrayList<Connection>();
+						for (int i = 0; i<nodes.size();i++){
+							tempList.add(null);
+						}
+						for (int i=0; i<nodes.size();i++){
+							connections.add(tempList);
+						}
 						repaint();
 					}
 				}
@@ -84,7 +90,8 @@ public class GUI extends JFrame {
 								mostRecentRect = null;
 								Connection tempConnection = new ConnectionDetails().getStoredConnection();
 								if (tempConnection != null){
-									lines.add(new Line(nodes.get(mostRecentIndex).getLocation(),nodes.get(currentIndex).getLocation(),tempConnection.getDistance()));
+									connections.get(mostRecentIndex).set(currentIndex, tempConnection);
+									connections.get(currentIndex).set(mostRecentIndex,tempConnection);
 									repaint();
 								}
 							}
@@ -93,8 +100,11 @@ public class GUI extends JFrame {
 							EditNode editDialog = new EditNode(nodes.get(currentIndex));
 							if (editDialog.getStoredNode()!=null){
 								nodes.set(currentIndex,editDialog.getStoredNode());
+							}else{
+								nodes.remove(currentIndex);
 							}
-
+							editDialog.dispose();
+							repaint();
 						}
 					}
 				}
@@ -103,6 +113,14 @@ public class GUI extends JFrame {
 					NodeDetails nodeDialog = new NodeDetails(nodes.size(), p);
 					if (nodeDialog.getStoredNode() != null) {
 						nodes.add(nodeDialog.getStoredNode());
+						ArrayList<Connection> tempList = new ArrayList<Connection>();
+						for (int i = 0; i<nodes.size();i++){
+							tempList.add(null);
+						}
+						connections.add(tempList);
+						for (int i=0; i<nodes.size()-1;i++){
+							connections.get(i).add(null);
+						}
 						repaint();
 					}
 
@@ -137,6 +155,7 @@ public class GUI extends JFrame {
 	@Override
 	public void paint(Graphics g) {
 		nodeClicks.clear();
+		connectionClicks.clear();
 		g.clearRect(0, 0, getWidth(), getHeight());
 		int imageWidth = (int) ((float) mapImage.getWidth(this) * ((float) getHeight() / (float) mapImage.getHeight(this)));
 		g.drawImage(mapImage, getWidth() - imageWidth, 0, imageWidth, getHeight(), this);
@@ -148,9 +167,21 @@ public class GUI extends JFrame {
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20 );
 			nodeClicks.add(rect);
 		}
-		for (Line l: lines){
-			g.drawLine((int) (l.getStart().getX() * getWidth()), (int) (l.getStart().getY() * getHeight()), (int) (l.getEnd().getX() * getWidth()), (int) (l.getEnd().getY() * getHeight()));
-			g.drawString(String.valueOf(l.getDistance()),(int) (l.getMidPoint().getX()*getWidth()),(int) (l.getMidPoint().getY()* getHeight()));
+		for (int x=0; x<nodes.size();x++) {
+			for (int y = 0; y < nodes.size(); y++) {
+				if (connections.get(x).get(y) != null) {
+					int startx = (int) nodeClicks.get(x).getLocation().getX() + 10;
+					int starty = (int) nodeClicks.get(x).getLocation().getY() + 10;
+					int endx = (int) nodeClicks.get(y).getLocation().getX() + 10;
+					int endy = (int) nodeClicks.get(y).getLocation().getY() + 10;
+					g.setColor(Color.BLUE);
+					g.drawLine(startx, starty, endx, endy);
+					Rectangle rect = new Rectangle( (startx + endx) / 2,(starty + endy) / 2,20,20);
+					connectionClicks.add(rect);
+					g.setColor(Color.BLACK);
+					g.drawString(String.valueOf(connections.get(x).get(y).getDistance()), (startx + endx) / 2, (starty + endy) / 2);
+				}
+			}
 		}
 	}
 
