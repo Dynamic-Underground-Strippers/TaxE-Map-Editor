@@ -14,8 +14,10 @@ import java.util.ArrayList;
 public class SaveFile extends JDialog {
     public boolean okClicked = false;
     private ArrayList<Station> nodes;
-    public SaveFile(ArrayList<Station> nodes){
+    private ArrayList<ArrayList<Connection>> connections;
+    public SaveFile(ArrayList<Station> nodes,ArrayList<ArrayList<Connection>> connections){
         this.nodes = nodes;
+        this.connections=connections;
         this.setModal(true);
         this.getContentPane().add (new SavePanel());
         this.pack();
@@ -85,16 +87,36 @@ public class SaveFile extends JDialog {
     }
     private void save(String fileName) throws IOException {
         if (this.nodes.size()>0) {
+            JSONObject mapJSON = new JSONObject();
+            JSONArray connectionJSON = new JSONArray();
             JSONArray nodeListJSON = new JSONArray();
+
             for (Station n : this.nodes) {
                 JSONObject node = new JSONObject();
                 node.put("name", n.getName());
                 node.put("location", n.getLocation().toString());
                 nodeListJSON.add(node);
             }
+
+            for (ArrayList<Connection> innerArray:connections){
+                JSONArray innerArrayJSON = new JSONArray();
+                for (int i = 0;i<innerArray.size();i++){
+                    if (innerArray.get(i)==null){
+                        innerArrayJSON.add(null);
+                    }else{
+                        innerArrayJSON.add(new Integer(innerArray.get(i).getDistance()));
+                    }
+
+                }
+                connectionJSON.add(innerArrayJSON);
+            }
+
+            mapJSON.put("nodes",nodeListJSON);
+            mapJSON.put("connections",connectionJSON);
+
             FileWriter file = new FileWriter(fileName);
             try {
-                file.write(nodeListJSON.toJSONString());
+                file.write(mapJSON.toJSONString());
             } catch (IOException e) {
                 e.printStackTrace();
 

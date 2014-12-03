@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class LoadFile extends JDialog {
     public boolean okClicked = false;
     private ArrayList<Station> nodes;
+    private ArrayList<ArrayList<Connection>> connections;
     public LoadFile(){
         this.setModal(true);
        this.getContentPane().add (new LoadPanel());
@@ -59,7 +60,7 @@ public class LoadFile extends JDialog {
                         okClicked = true;
                         close();
                     } else {
-                        // throw error or return message to user
+                        //TODO: throw error or return message to user
                     }
                 }
             });
@@ -81,24 +82,42 @@ public class LoadFile extends JDialog {
     }
     private void load(String fileName){
         ArrayList<Station> loadedNodes = new ArrayList<Station>();
+        ArrayList<ArrayList<Connection>> loadedConnections = new ArrayList<ArrayList<Connection>>();
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader(
                     fileName));
-            JSONArray nodeList = (JSONArray) obj;
+            JSONObject mapList = (JSONObject) obj;
+            JSONArray nodeList = (JSONArray) mapList.get("nodes");
+            JSONArray connectionList = (JSONArray) mapList.get("connections");
 
             for (int i =0; i<nodeList.size();i++){
                 JSONObject nodeJSON = (JSONObject) nodeList.get(i);
                 Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
                 loadedNodes.add(node);
             }
-
+            for (int i =0; i<connectionList.size();i++){
+                ArrayList<Connection> innerList = new ArrayList<Connection>();
+                JSONArray innerArray = (JSONArray) connectionList.get(i);
+                for (int x =0; x<innerArray.size();x++){
+                    if (innerArray.get(x)!=null){
+                        innerList.add(new Connection(Integer.valueOf(innerArray.get(x).toString())));
+                    }else{
+                        innerList.add(null);
+                    }
+                }
+                loadedConnections.add(innerList);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         this.nodes = loadedNodes;
+        this.connections = loadedConnections;
     }
     public ArrayList<Station> getNodes(){
         return this.nodes;
+    }
+    public ArrayList<ArrayList<Connection>> getConnections(){
+        return this.connections;
     }
 }

@@ -40,7 +40,7 @@ public class GUI extends JFrame {
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_S) {
 					if (ctrlClicked){
-						SaveFile saveDialog = new SaveFile(nodes);
+						SaveFile saveDialog = new SaveFile(nodes,connections);
 						saveDialog.dispose();
 					}
 				}
@@ -49,6 +49,7 @@ public class GUI extends JFrame {
 						LoadFile loadDialog = new LoadFile();
 						if (loadDialog.okClicked){
 							nodes = loadDialog.getNodes();
+							connections = loadDialog.getConnections();
 						}
 						loadDialog.dispose();
 						//TODO: Make this load in the connections, later on though
@@ -101,7 +102,10 @@ public class GUI extends JFrame {
 							if (editDialog.getStoredNode()!=null){
 								nodes.set(currentIndex,editDialog.getStoredNode());
 							}else{
+								for (int i = 0;i<nodes.size();i++)
+									connections.get(i).remove(currentIndex);
 								nodes.remove(currentIndex);
+								connections.remove(currentIndex);
 							}
 							editDialog.dispose();
 							repaint();
