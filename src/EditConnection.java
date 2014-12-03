@@ -3,78 +3,76 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.*;
-public class EditNode extends JDialog{
-    private Station storedNode=null;
-    public EditNode(Station node){
-        this.storedNode = node;
+public class EditConnection extends JDialog{
+    private Connection storedConnection=null;
+    public EditConnection (Connection connection){
+        this.storedConnection = connection;
         this.setModal(true);
-        this.getContentPane().add (new MyPanel(node));
+        this.getContentPane().add (new MyPanel(connection));
         this.pack();
         this.setVisible(true);
     }
-    private void setStoredNode(Station node){
-        this.storedNode = node;
+    private void setStoredConnection(Connection connection){
+        this.storedConnection = connection;
     }
-    public Station getStoredNode(){ return this.storedNode;}
+    public Connection getStoredConnection(){ return this.storedConnection;}
     public class MyPanel extends JPanel {
 
         private JLabel jcomp1;
-        private JTextField tbName;
-        private JLabel jcomp3;
-        private JTextField tbLocation;
+        private JTextField tbDistance;
         private JButton btnDelete;
         private JButton btnOK;
         private JButton btnCancel;
+
         private void Close(){
-            EditNode.this.setVisible(false);
+            EditConnection.this.setVisible(false);
         }
-        public MyPanel(final Node node) {
-            jcomp1 = new JLabel ("Name:");
-            tbName = new JTextField (5);
-            jcomp3 = new JLabel ("Location:");
-            tbLocation = new JTextField (5);
+
+        public MyPanel(final Connection connection) {
+            jcomp1 = new JLabel ("Distance:");
+            tbDistance = new JTextField (5);
             btnDelete = new JButton ("Delete");
             btnOK = new JButton ("OK");
             btnCancel = new JButton ("Cancel");
             setPreferredSize (new Dimension (301, 121));
             setLayout(null);
-            tbName.setText(node.getName());
-            tbLocation.setText(node.getLocation().toString());
+            tbDistance.setText(String.valueOf(connection.getDistance()));
+
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Station tempNode = new Station(node.getId(),tbName.getText(),new Point(tbLocation.getText()));
-                    setStoredNode(tempNode);
+                    Connection tempConnection = new Connection(Integer.valueOf(tbDistance.getText()));
+                    setStoredConnection(tempConnection);
                     Close();
                 }
             });
+
             btnDelete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setStoredNode(null);
+                    setStoredConnection(null);
                     Close();
                 }
             });
+
             btnCancel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Close();
                 }
             });
+
             add(jcomp1);
-            add (tbName);
-            add (jcomp3);
-            add (tbLocation);
+            add (tbDistance);
             add (btnDelete);
             add (btnOK);
             add (btnCancel);
+
             jcomp1.setBounds (15, 10, 100, 25);
-            tbName.setBounds (80, 10, 195, 25);
-            jcomp3.setBounds (15, 45, 100, 25);
-            tbLocation.setBounds (80, 45, 195, 25);
-            btnDelete.setBounds (5, 85, 100, 25);
-            btnOK.setBounds (100, 85, 100, 25);
-            btnCancel.setBounds (195, 85, 100, 25);
+            tbDistance.setBounds(80, 10, 195, 25);
+            btnDelete.setBounds (5, 45, 100, 25);
+            btnOK.setBounds (100, 45, 100, 25);
+            btnCancel.setBounds (195, 45, 100, 25);
         }
     }
 }

@@ -10,7 +10,7 @@ public class GUI extends JFrame {
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	Rectangle mostRecentRect=null;
-	ArrayList<Rectangle> connectionClicks = new ArrayList<Rectangle>();
+	ArrayList<Rect> connectionClicks = new ArrayList<Rect>();
 	ArrayList<ArrayList<Connection>> connections = new ArrayList<ArrayList<Connection>>();
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
@@ -112,7 +112,20 @@ public class GUI extends JFrame {
 						}
 					}
 				}
-				if (!rectClicked) {
+				for (Rect rect : connectionClicks) {
+					if (rect.contains(e.getPoint())) {
+						rectClicked = true;
+						if (e.getButton() == MouseEvent.BUTTON3) {
+							Connection clickedConnection = connections.get(rect.getStartIndex()).get(rect.getEndIndex());
+							EditConnection editConnection = new EditConnection(clickedConnection);
+							connections.get(rect.getStartIndex()).set(rect.getEndIndex(),editConnection.getStoredConnection());
+							connections.get(rect.getEndIndex()).set(rect.getStartIndex(),editConnection.getStoredConnection());
+							editConnection.dispose();
+							repaint();
+						}
+					}
+				}
+				if ((!rectClicked) && (e.getButton() == MouseEvent.BUTTON1)) {
 					Point p = new Point((float) e.getX() / (float) getWidth(), (float) e.getY() / (float) getHeight());
 					NodeDetails nodeDialog = new NodeDetails(nodes.size(), p);
 					if (nodeDialog.getStoredNode() != null) {
@@ -168,7 +181,7 @@ public class GUI extends JFrame {
 		g.setColor(Color.MAGENTA);
 		for (Station n : nodes) {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
-			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20 );
+			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			nodeClicks.add(rect);
 		}
 		for (int x=0; x<nodes.size();x++) {
@@ -180,18 +193,12 @@ public class GUI extends JFrame {
 					int endy = (int) nodeClicks.get(y).getLocation().getY() + 10;
 					g.setColor(Color.BLUE);
 					g.drawLine(startx, starty, endx, endy);
-					Rectangle rect = new Rectangle( (startx + endx) / 2,(starty + endy) / 2,20,20);
+					Rect rect = new Rect((startx + endx) / 2,(starty + endy) / 2,20,20,x,y);
 					connectionClicks.add(rect);
 					g.setColor(Color.BLACK);
 					g.drawString(String.valueOf(connections.get(x).get(y).getDistance()), (startx + endx) / 2, (starty + endy) / 2);
 				}
 			}
-		}
-	}
-
-	public void rebalanceIDs(){
-		for (int i=0;i<nodes.size();i++){
-			nodes.get(i).setId(i);
 		}
 	}
 }
