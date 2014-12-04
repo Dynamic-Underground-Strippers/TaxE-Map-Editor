@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class EditAllNodes extends JDialog{
-    private ArrayList<Station> nodes;
+    private ArrayList<Node> nodes;
 
-    public EditAllNodes(ArrayList<Station> nodes) {
+    public EditAllNodes(ArrayList<Node> nodes) {
         this.nodes = nodes;
         this.setModal(true);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
@@ -18,6 +18,7 @@ public class EditAllNodes extends JDialog{
         this.getContentPane().add (scroll);
        this.pack();
        this.setVisible(true);
+        this.setPreferredSize(new Dimension(260, 400));
     }
 
     public class MyPanel extends JPanel {
@@ -29,13 +30,13 @@ public class EditAllNodes extends JDialog{
         private JButton btnOK;
         private JButton btnCancel;
 
-        public MyPanel(ArrayList<Station> nodes) {
+        public MyPanel(ArrayList<Node> nodes) {
 
             setLayout (null);
             int starty = 10;
             setPreferredSize (new Dimension (250,50 + nodes.size()*80));
 
-            for (Station n:nodes) {
+            for (Node n:nodes) {
                 lblNode = new JLabel("Node " + String.valueOf(n.getId()));
                 lblName = new JLabel("Name");
                 lblLocation = new JLabel("Location");
@@ -66,10 +67,10 @@ public class EditAllNodes extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     int nodeIndex=0;
                     Component[] components = MyPanel.this.getComponents();
-                    Component component = null;
+                    Component component;
                     String nameField="";
                     String locationField="";
-                    ArrayList<Station> nodes = new ArrayList<Station>();
+                    ArrayList<Node> nodes = new ArrayList<Node>();
                     float[] locations = {0,0};
                     for (int i = 3; i < components.length; i++)
                     {
@@ -89,7 +90,7 @@ public class EditAllNodes extends JDialog{
                             }
 
                             else if ((i % 5)==0){
-                                Station tempStation = new Station(nodeIndex,nameField,new Point(locations[0]/1920,locations[1]/1080));
+                                Node tempStation = new Station(nodeIndex,nameField,new Point(locations[0]/1920,locations[1]/1080));
                                 nodeIndex+=1;
                                 nodes.add(tempStation);
                             }
@@ -103,16 +104,13 @@ public class EditAllNodes extends JDialog{
             btnCancel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Dispose();
+                    setNodeList(new ArrayList<Node>());
+                    Close();
                 }
             });
 
             add(btnOK);
             add(btnCancel);
-        }
-
-        private void Dispose(){
-            EditAllNodes.this.dispose();
         }
 
         private void Close(){
@@ -122,11 +120,11 @@ public class EditAllNodes extends JDialog{
 
 
 
-    private void setNodeList(ArrayList<Station> nodes){
+    private void setNodeList(ArrayList<Node> nodes){
         this.nodes = nodes;
     }
 
-    public ArrayList<Station> getNodeList(){
+    public ArrayList<Node> getNodeList(){
         return nodes;
     }
 }

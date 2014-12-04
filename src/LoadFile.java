@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class LoadFile extends JDialog {
     public boolean okClicked = false;
-    private ArrayList<Station> nodes;
+    private ArrayList<Node> nodes;
     private ArrayList<ArrayList<Connection>> connections;
     public LoadFile(){
         this.setModal(true);
@@ -81,7 +81,7 @@ public class LoadFile extends JDialog {
         }
     }
     private void load(String fileName){
-        ArrayList<Station> loadedNodes = new ArrayList<Station>();
+        ArrayList<Node> loadedNodes = new ArrayList<Node>();
         ArrayList<ArrayList<Connection>> loadedConnections = new ArrayList<ArrayList<Connection>>();
         JSONParser parser = new JSONParser();
         try {
@@ -93,7 +93,7 @@ public class LoadFile extends JDialog {
 
             for (int i =0; i<nodeList.size();i++){
                 JSONObject nodeJSON = (JSONObject) nodeList.get(i);
-                Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
+                Node node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
                 loadedNodes.add(node);
             }
             for (int i =0; i<connectionList.size();i++){
@@ -114,7 +114,7 @@ public class LoadFile extends JDialog {
         this.nodes = loadedNodes;
         this.connections = loadedConnections;
     }
-    public ArrayList<Station> getNodes(){
+    public ArrayList<Node> getNodes(){
         return this.nodes;
     }
     public ArrayList<ArrayList<Connection>> getConnections(){

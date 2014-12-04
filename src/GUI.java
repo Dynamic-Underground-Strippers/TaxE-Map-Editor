@@ -3,10 +3,10 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-
+//TODO: Edit goals
 public class GUI extends JFrame {
 	Image mapImage;
-	ArrayList<Station> nodes = new ArrayList<Station>();
+	ArrayList<Node> nodes = new ArrayList<Node>();
 	boolean ctrlClicked = false;
 	ArrayList<Rectangle> nodeClicks = new ArrayList<Rectangle>();
 	Rectangle mostRecentRect=null;
@@ -27,8 +27,7 @@ public class GUI extends JFrame {
 						nodes.remove(nodes.size() - 1);
 						repaint();
 					}
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_E){
+				} else if (e.getKeyCode() == KeyEvent.VK_E) {
 					if (ctrlClicked) {
 						EditAllNodes editDialog = new EditAllNodes(nodes);
 						if (editDialog.getNodeList().size() > 0) {
@@ -37,33 +36,22 @@ public class GUI extends JFrame {
 						}
 						editDialog.dispose();
 					}
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_S) {
-					if (ctrlClicked){
-						SaveFile saveDialog = new SaveFile(nodes,connections);
+				} else if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (ctrlClicked) {
+						SaveFile saveDialog = new SaveFile(nodes, connections);
 						saveDialog.dispose();
 					}
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_L) {
-					if (ctrlClicked){
+				} else if (e.getKeyCode() == KeyEvent.VK_L) {
+					if (ctrlClicked) {
 						LoadFile loadDialog = new LoadFile();
-						if (loadDialog.okClicked){
+						if (loadDialog.okClicked) {
 							nodes = loadDialog.getNodes();
 							connections = loadDialog.getConnections();
 						}
 						loadDialog.dispose();
-						//TODO: Make this load in the connections, later on though
-						ArrayList<Connection> tempList = new ArrayList<Connection>();
-						for (int i = 0; i<nodes.size();i++){
-							tempList.add(null);
-						}
-						for (int i=0; i<nodes.size();i++){
-							connections.add(tempList);
-						}
 						repaint();
 					}
-				}
-				else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+				} else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
 					ctrlClicked = true;
 				}
 			}
@@ -185,7 +173,7 @@ public class GUI extends JFrame {
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
 		int fontHeight = metrics.getHeight();
 		g.setColor(Color.MAGENTA);
-		for (Station n : nodes) {
+		for (Node n : nodes) {
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			nodeClicks.add(rect);

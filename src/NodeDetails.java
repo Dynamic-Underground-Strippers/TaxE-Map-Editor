@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 public class NodeDetails extends JDialog {
-    private Station storedNode;
+    private Node storedNode;
 
     NodeDetails(final int id, final Point location){
         this.storedNode = null;
@@ -15,7 +15,7 @@ public class NodeDetails extends JDialog {
         this.setVisible(true);
     }
 
-    public Station getStoredNode(){
+    public Node getStoredNode(){
         return storedNode;
     }
 

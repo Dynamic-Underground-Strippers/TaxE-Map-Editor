@@ -13,9 +13,9 @@ import java.util.ArrayList;
 
 public class SaveFile extends JDialog {
     public boolean okClicked = false;
-    private ArrayList<Station> nodes;
+    private ArrayList<Node> nodes;
     private ArrayList<ArrayList<Connection>> connections;
-    public SaveFile(ArrayList<Station> nodes,ArrayList<ArrayList<Connection>> connections){
+    public SaveFile(ArrayList<Node> nodes,ArrayList<ArrayList<Connection>> connections){
         this.nodes = nodes;
         this.connections=connections;
         this.setModal(true);
@@ -91,7 +91,7 @@ public class SaveFile extends JDialog {
             JSONArray connectionJSON = new JSONArray();
             JSONArray nodeListJSON = new JSONArray();
 
-            for (Station n : this.nodes) {
+            for (Node n : this.nodes) {
                 JSONObject node = new JSONObject();
                 node.put("name", n.getName());
                 node.put("location", n.getLocation().toString());
@@ -128,7 +128,7 @@ public class SaveFile extends JDialog {
             //Print message or return error if nothing to save
         }
     }
-    public ArrayList<Station> getNodes(){
+    public ArrayList<Node> getNodes(){
         return this.nodes;
     }
 

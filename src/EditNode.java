@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.*;
 public class EditNode extends JDialog{
-    private Station storedNode=null;
-    public EditNode(Station node){
+    private Node storedNode=null;
+    public EditNode(Node node){
         this.storedNode = node;
         this.setModal(true);
         this.getContentPane().add (new MyPanel(node));
         this.pack();
         this.setVisible(true);
     }
-    private void setStoredNode(Station node){
+    private void setStoredNode(Node node){
         this.storedNode = node;
     }
-    public Station getStoredNode(){ return this.storedNode;}
+    public Node getStoredNode(){ return this.storedNode;}
     public class MyPanel extends JPanel {
 
         private JLabel jcomp1;
