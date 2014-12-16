@@ -55,12 +55,12 @@ public class LoadFile extends JDialog {
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (new File(tbFileName.getText()).isFile()) {
+                    if (new File(tbFileName.getText()).isFile() && (tbFileName.getText().substring(tbFileName.getText().length()-5)).equals(".json"))  {
                         load(tbFileName.getText());
                         okClicked = true;
                         close();
                     } else {
-                        //TODO: throw error or return message to user
+                        JOptionPane.showMessageDialog(LoadFile.this,"Please select a valid file to load", "Invalid File Selected", JOptionPane.PLAIN_MESSAGE);
                     }
                 }
             });

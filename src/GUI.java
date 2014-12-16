@@ -53,6 +53,13 @@ public class GUI extends JFrame {
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
 					ctrlClicked = true;
+				} else if (e.getKeyCode() == KeyEvent.VK_R){
+					//Resets the map to original state
+					if (ctrlClicked){
+						nodes.clear();
+						connections.clear();
+						repaint();
+					}
 				}
 			}
 
@@ -63,17 +70,21 @@ public class GUI extends JFrame {
 				}
 			}
 		});
+
 		addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean rectClicked = false;
+
 				for (Rectangle rect : nodeClicks) {
 					if (rect.contains(e.getPoint())) {
 						rectClicked = true;
+
 						if (e.getButton() == MouseEvent.BUTTON1) {
 							if (mostRecentRect == null){
 								mostRecentRect = rect;
-							}else if (rect!=mostRecentRect){
+							}
+							else if (rect!=mostRecentRect){
 								int mostRecentIndex = nodeClicks.indexOf(mostRecentRect);
 								int currentIndex = nodeClicks.indexOf(rect);
 								mostRecentRect = null;
@@ -86,12 +97,14 @@ public class GUI extends JFrame {
 									}
 								}
 							}
-						} else if (e.getButton() == MouseEvent.BUTTON3) {
+						}
+						else if (e.getButton() == MouseEvent.BUTTON3) {
 							int currentIndex = nodeClicks.indexOf(rect);
 							EditNode editDialog = new EditNode(nodes.get(currentIndex));
 							if (editDialog.getStoredNode()!=null){
 								nodes.set(currentIndex,editDialog.getStoredNode());
-							}else{
+							}
+							else{
 								//Deletes the node
 								for (int i = 0;i<nodes.size();i++)
 									connections.get(i).remove(currentIndex);

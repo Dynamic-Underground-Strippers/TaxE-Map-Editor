@@ -54,6 +54,9 @@ public class SaveFile extends JDialog {
                     int returnVal = fc.showSaveDialog(getParent());
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         tbFileName.setText(fc.getSelectedFile().getAbsolutePath());
+                        if (!((tbFileName.getText().substring(tbFileName.getText().length()-5)).equals(".json"))){
+                            tbFileName.setText(tbFileName.getText() + ".json");
+                        }
                     }
                 }
             });
