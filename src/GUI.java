@@ -172,8 +172,12 @@ public class GUI extends JFrame {
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
 		int fontHeight = metrics.getHeight();
-		g.setColor(Color.MAGENTA);
 		for (Node n : nodes) {
+			if (n instanceof Station){
+				g.setColor(Color.MAGENTA);
+			} else{
+				g.setColor(Color.GREEN);
+			}
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			nodeClicks.add(rect);

@@ -30,14 +30,13 @@ public class NodeDetails extends JDialog {
         public void Close(){
             NodeDetails.this.setVisible(false);
         }
+
         public void Dispose(){
             NodeDetails.this.dispose();
         }
-        public NodeDetailsPanel(final int id, final Point location) {
-            //construct preComponents
-            String[] cbTypeItems = {"Station", "Junction"};
 
-            //construct components
+        public NodeDetailsPanel(final int id, final Point location) {
+            String[] cbTypeItems = {"Station", "Junction"};
             tbName = new JTextField (5);
             cbType = new JComboBox (cbTypeItems);
             jcomp3 = new JLabel ("Node Type:");
@@ -47,7 +46,12 @@ public class NodeDetails extends JDialog {
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    storedNode = new Station(id,tbName.getText(),location);
+                    if (cbType.getSelectedItem().toString()=="Station"){
+                        storedNode = new Station(id,tbName.getText(),location);
+                    } else{
+                        storedNode = new Junction(id,tbName.getText(),location);
+                    }
+
                     NodeDetailsPanel.this.Close();
                 }
             });
@@ -57,19 +61,14 @@ public class NodeDetails extends JDialog {
                     NodeDetailsPanel.this.Dispose();
                 }
             });
-            //adjust size and set layout
             setPreferredSize(new Dimension(257, 124));
             setLayout (null);
-
-            //add components
             add (tbName);
             add (cbType);
             add (jcomp3);
             add (jcomp4);
             add (btnOK);
             add (btnCancel);
-
-            //set component bounds (only needed by Absolute Positioning)
             tbName.setBounds (115, 55, 100, 25);
             cbType.setBounds (115, 10, 100, 25);
             jcomp3.setBounds(10, 10, 100, 25);
