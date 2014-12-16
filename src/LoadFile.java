@@ -93,8 +93,13 @@ public class LoadFile extends JDialog {
 
             for (int i =0; i<nodeList.size();i++){
                 JSONObject nodeJSON = (JSONObject) nodeList.get(i);
-                Node node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
-                loadedNodes.add(node);
+                if (nodeJSON.get("type").toString().equals("Station")){
+                    Station node = new Station(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
+                    loadedNodes.add(node);
+                } else{
+                    Junction node = new Junction(i,nodeJSON.get("name").toString(),new Point(nodeJSON.get("location").toString()));
+                    loadedNodes.add(node);
+                }
             }
             for (int i =0; i<connectionList.size();i++){
                 ArrayList<Connection> innerList = new ArrayList<Connection>();

@@ -93,6 +93,12 @@ public class SaveFile extends JDialog {
 
             for (Node n : this.nodes) {
                 JSONObject node = new JSONObject();
+                if (n instanceof Station){
+                    node.put("type","Station");
+                } else{
+                    node.put("type","Junction");
+                }
+
                 node.put("name", n.getName());
                 node.put("location", n.getLocation().toString());
                 nodeListJSON.add(node);
