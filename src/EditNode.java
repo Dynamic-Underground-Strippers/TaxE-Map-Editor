@@ -25,10 +25,15 @@ public class EditNode extends JDialog{
         private JButton btnDelete;
         private JButton btnOK;
         private JButton btnCancel;
+        private JLabel jcomp4;
+        private JComboBox<String> cbType;
         private void Close(){
             EditNode.this.setVisible(false);
         }
         public MyPanel(final Node node) {
+            String[] cbTypeItems = {"Station", "Junction"};
+            cbType = new JComboBox (cbTypeItems);
+            jcomp4= new JLabel("Type:");
             jcomp1 = new JLabel ("Name:");
             tbName = new JTextField (5);
             jcomp3 = new JLabel ("Location:");
@@ -36,18 +41,25 @@ public class EditNode extends JDialog{
             btnDelete = new JButton ("Delete");
             btnOK = new JButton ("OK");
             btnCancel = new JButton ("Cancel");
-            setPreferredSize (new Dimension (301, 121));
+            setPreferredSize (new Dimension (301, 160));
             setLayout(null);
             tbName.setText(node.getName());
             tbLocation.setText(node.getLocation().toString());
+
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Station tempNode = new Station(node.getId(),tbName.getText(),new Point(tbLocation.getText()));
-                    setStoredNode(tempNode);
+                    if (cbType.getSelectedItem().toString()=="Station") {
+                        Station tempNode = new Station(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
+                        setStoredNode(tempNode);
+                    }else{
+                        Junction tempNode = new Junction(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
+                        setStoredNode(tempNode);
+                    }
                     Close();
                 }
             });
+
             btnDelete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -55,12 +67,14 @@ public class EditNode extends JDialog{
                     Close();
                 }
             });
+
             btnCancel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Close();
                 }
             });
+
             add(jcomp1);
             add (tbName);
             add (jcomp3);
@@ -68,13 +82,17 @@ public class EditNode extends JDialog{
             add (btnDelete);
             add (btnOK);
             add (btnCancel);
-            jcomp1.setBounds (15, 10, 100, 25);
-            tbName.setBounds (80, 10, 195, 25);
-            jcomp3.setBounds (15, 45, 100, 25);
-            tbLocation.setBounds (80, 45, 195, 25);
-            btnDelete.setBounds (5, 85, 100, 25);
-            btnOK.setBounds (100, 85, 100, 25);
-            btnCancel.setBounds (195, 85, 100, 25);
+            add (cbType);
+            add (jcomp4);
+            cbType.setBounds(80, 10, 195, 25);
+            jcomp4.setBounds(15,10,100,25);
+            jcomp1.setBounds (15, 45, 100, 25);
+            tbName.setBounds (80, 45, 195, 25);
+            jcomp3.setBounds (15, 80, 100, 25);
+            tbLocation.setBounds (80,80, 195, 25);
+            btnDelete.setBounds (5, 120, 100, 25);
+            btnOK.setBounds (100, 120, 100, 25);
+            btnCancel.setBounds (195, 120, 100, 25);
         }
     }
 }

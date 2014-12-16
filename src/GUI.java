@@ -92,6 +92,7 @@ public class GUI extends JFrame {
 							if (editDialog.getStoredNode()!=null){
 								nodes.set(currentIndex,editDialog.getStoredNode());
 							}else{
+								//Deletes the node
 								for (int i = 0;i<nodes.size();i++)
 									connections.get(i).remove(currentIndex);
 								nodes.remove(currentIndex);
@@ -155,6 +156,7 @@ public class GUI extends JFrame {
 
 			}
 		});
+
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
@@ -172,6 +174,7 @@ public class GUI extends JFrame {
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
 		int fontHeight = metrics.getHeight();
+
 		for (Node n : nodes) {
 			if (n instanceof Station){
 				g.setColor(Color.MAGENTA);
@@ -182,6 +185,7 @@ public class GUI extends JFrame {
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			nodeClicks.add(rect);
 		}
+
 		for (int x=0; x<nodes.size();x++) {
 			for (int y = x; y < nodes.size(); y++) {
 				if (connections.get(x).get(y) != null) {
