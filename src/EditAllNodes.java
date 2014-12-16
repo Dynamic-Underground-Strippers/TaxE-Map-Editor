@@ -29,32 +29,44 @@ public class EditAllNodes extends JDialog{
         private JTextField tbLocation;
         private JButton btnOK;
         private JButton btnCancel;
+        private JComboBox<String> cbType;
 
         public MyPanel(ArrayList<Node> nodes) {
 
             setLayout (null);
             int starty = 10;
-            setPreferredSize (new Dimension (250,50 + nodes.size()*80));
+            setPreferredSize (new Dimension (250,50 + nodes.size()*95));
 
             for (Node n:nodes) {
-                lblNode = new JLabel("Node " + String.valueOf(n.getId()));
+                String[] cbTypeItems = {"Station", "Junction"};
+                cbType = new JComboBox<String>(cbTypeItems);
+                if (n instanceof Station){
+                    cbType.setSelectedItem("Station");
+                } else{
+                    cbType.setSelectedItem("Junction");
+                }
+
+                lblNode = new JLabel("Node " + String.valueOf(n.getId()) + " - Type: ");
                 lblName = new JLabel("Name");
                 lblLocation = new JLabel("Location");
                 tbName = new JTextField(5);
                 tbName.setText(n.getName());
                 tbLocation = new JTextField(5);
                 tbLocation.setText(String.valueOf(n.getLocation().getX()*1920) + "," + String.valueOf(n.getLocation().getY()*1080));
+                cbType.setBounds(100,starty,100,25);
                 lblNode.setBounds(10, starty, 100, 25);
-                lblName.setBounds (25, starty+25, 100, 25);
-                lblLocation.setBounds (25, starty+55, 100, 25);
-                tbName.setBounds (100, starty+25, 100, 25);
-                tbLocation.setBounds (100, starty+55, 100, 25);
-                starty+= 80;
+                lblName.setBounds (25, starty+30, 100, 25);
+                lblLocation.setBounds (25, starty+60, 100, 25);
+                tbName.setBounds (100, starty+30, 100, 25);
+                tbLocation.setBounds (100, starty+60, 100, 25);
+                starty+= 95;
                 add (lblNode);
+                add (cbType);
                 add (lblName);
-                add (lblLocation);
                 add (tbName);
+                add (lblLocation);
                 add (tbLocation);
+
             }
 
             btnOK =  new JButton("OK");
@@ -65,34 +77,43 @@ public class EditAllNodes extends JDialog{
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int nodeIndex=0;
                     Component[] components = MyPanel.this.getComponents();
                     Component component;
                     String nameField="";
                     String locationField="";
+                    boolean station = false;
                     ArrayList<Node> nodes = new ArrayList<Node>();
                     float[] locations = {0,0};
-                    for (int i = 3; i < components.length; i++)
+                    for (int i = 1; i < components.length; i++)
                     {
                         component = components[i];
-                            if ((i %  5)==3){
+                            if ((i %  6)==3){
                                 nameField = ((JTextField)component).getText();
                             }
 
-                            else if ((i % 5)==4){
+                            else if ((i % 6)==5){
                                 locationField =((JTextField)component).getText();
                                 int count = 0;
                                 for (String locationStr: locationField.split(",", 0)){
-                                   locations[count] = Float.parseFloat(locationStr);
+                                    locations[count] = Float.parseFloat(locationStr);
                                     count++;
                                 }
 
-                            }
+                            } else if (((i % 6)==1) && (component instanceof JComboBox)) {
+                                if (((JComboBox<String>) component).getSelectedItem().toString().equals("Station")){
+                                    station = true;
+                                } else{
+                                    station = false;
+                                }
 
-                            else if ((i % 5)==0){
-                                Node tempStation = new Station(nodeIndex,nameField,new Point(locations[0]/1920,locations[1]/1080));
-                                nodeIndex+=1;
-                                nodes.add(tempStation);
+                            } else if ((i % 6)==0){
+                                if (station){
+                                    Station tempNode = new Station(nodes.size(),nameField,new Point(locations[0]/1920,locations[1]/1080));
+                                    nodes.add(tempNode);
+                                }else{
+                                    Junction tempNode = new Junction(nodes.size(),nameField,new Point(locations[0]/1920,locations[1]/1080));
+                                    nodes.add(tempNode);
+                                }
                             }
                     }
 
