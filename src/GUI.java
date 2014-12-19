@@ -23,11 +23,13 @@ public class GUI extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) mostRecentRect = null;
 				else if (e.getKeyCode() == KeyEvent.VK_Z) {
+					//Undo
 					if (ctrlClicked) {
 						nodes.remove(nodes.size() - 1);
 						repaint();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_E) {
+					//Edits all nodes
 					if (ctrlClicked) {
 						EditAllNodes editDialog = new EditAllNodes(nodes);
 						if (editDialog.getNodeList().size() > 0) {
@@ -37,12 +39,14 @@ public class GUI extends JFrame {
 						editDialog.dispose();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_S) {
+					// Saves the current map
 					if (ctrlClicked) {
 						SaveFile saveDialog = new SaveFile(nodes, connections);
 						saveDialog.dispose();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_L) {
 					if (ctrlClicked) {
+						//Loads a file into the editor
 						LoadFile loadDialog = new LoadFile();
 						if (loadDialog.okClicked) {
 							nodes = loadDialog.getNodes();
@@ -110,6 +114,7 @@ public class GUI extends JFrame {
 									connections.get(i).remove(currentIndex);
 								nodes.remove(currentIndex);
 								connections.remove(currentIndex);
+								rebalanceIDs();
 							}
 							editDialog.dispose();
 							repaint();
@@ -149,6 +154,7 @@ public class GUI extends JFrame {
 
 				}
 			}
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -215,6 +221,11 @@ public class GUI extends JFrame {
 					g.drawString(String.valueOf(connections.get(x).get(y).getDistance()), (startx + endx) / 2, (starty + endy) / 2);
 				}
 			}
+		}
+	}
+	private void rebalanceIDs(){
+		for (int i = 0;i<nodes.size();i++){
+			nodes.get(i).setId(i);
 		}
 	}
 }
