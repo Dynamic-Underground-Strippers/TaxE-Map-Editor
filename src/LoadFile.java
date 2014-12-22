@@ -13,6 +13,7 @@ public class LoadFile extends JDialog {
     public boolean okClicked = false;
     private ArrayList<Node> nodes;
     private ArrayList<ArrayList<Connection>> connections;
+    private ArrayList<Goal> goals;
     public LoadFile(){
         this.setModal(true);
        this.getContentPane().add (new LoadPanel());
@@ -84,6 +85,7 @@ public class LoadFile extends JDialog {
         //TODO: Add loading of goals
         ArrayList<Node> loadedNodes = new ArrayList<Node>();
         ArrayList<ArrayList<Connection>> loadedConnections = new ArrayList<ArrayList<Connection>>();
+        ArrayList<Goal> loadedGoals = new ArrayList<Goal>();
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader(
@@ -91,6 +93,7 @@ public class LoadFile extends JDialog {
             JSONObject mapList = (JSONObject) obj;
             JSONArray nodeList = (JSONArray) mapList.get("nodes");
             JSONArray connectionList = (JSONArray) mapList.get("connections");
+            JSONArray goalList = (JSONArray) mapList.get("goals");
 
             for (int i =0; i<nodeList.size();i++){
                 JSONObject nodeJSON = (JSONObject) nodeList.get(i);
@@ -102,6 +105,7 @@ public class LoadFile extends JDialog {
                     loadedNodes.add(node);
                 }
             }
+
             for (int i =0; i<connectionList.size();i++){
                 ArrayList<Connection> innerList = new ArrayList<Connection>();
                 JSONArray innerArray = (JSONArray) connectionList.get(i);
@@ -114,16 +118,34 @@ public class LoadFile extends JDialog {
                 }
                 loadedConnections.add(innerList);
             }
+            for (int i =0; i<goalList.size();i++){
+                JSONObject goalJSON = (JSONObject) nodeList.get(i);
+                Node startNode=null;
+                Node endNode=null;
+                for (Node node: loadedNodes){
+                    if (node.getName().equals(goalJSON.get("start"))){
+                        startNode = node;
+                    } if (node.getName().equals(goalJSON.get("end"))){
+                        endNode = node;
+                    }
+                }
+                Goal tempGoal = new Goal(Integer.valueOf(goalJSON.get("points").toString()),startNode,endNode);
+                loadedGoals.add(tempGoal);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         this.nodes = loadedNodes;
         this.connections = loadedConnections;
+        this.goals = loadedGoals;
     }
     public ArrayList<Node> getNodes(){
         return this.nodes;
     }
     public ArrayList<ArrayList<Connection>> getConnections(){
         return this.connections;
+    }
+    public ArrayList<Goal> getGoals(){
+        return this.goals;
     }
 }

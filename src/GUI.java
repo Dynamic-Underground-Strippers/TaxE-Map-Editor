@@ -42,7 +42,7 @@ public class GUI extends JFrame {
 				} else if (e.getKeyCode() == KeyEvent.VK_S) {
 					// Saves the current map
 					if (ctrlClicked) {
-						SaveFile saveDialog = new SaveFile(nodes, connections);
+						SaveFile saveDialog = new SaveFile(nodes, connections,goals);
 						saveDialog.dispose();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_L) {
@@ -52,6 +52,7 @@ public class GUI extends JFrame {
 						if (loadDialog.okClicked) {
 							nodes = loadDialog.getNodes();
 							connections = loadDialog.getConnections();
+							goals = loadDialog.getGoals();
 						}
 						loadDialog.dispose();
 						repaint();
