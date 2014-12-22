@@ -10,9 +10,14 @@ public class EditGoals extends JDialog{
     public EditGoals(ArrayList<Node> nodes, ArrayList<Goal> goals){
         this.setModal(true);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-        this.getContentPane().add (new MyPanel(nodes,goals));
+        MyPanel contentPanel = new MyPanel(nodes,goals);
+        JScrollPane scroll = new JScrollPane(contentPanel);
+        scroll.setAutoscrolls(true);
+        scroll.setViewportView(contentPanel);
+        this.getContentPane().add (scroll);
         this.pack();
         this.setVisible(true);
+        setPreferredSize(new Dimension(450,200));
     }
 
     private void setCurrentGoals(ArrayList<Goal> goals){
@@ -186,7 +191,11 @@ public class EditGoals extends JDialog{
     }
     private void redraw(ArrayList<Node> nodes,ArrayList<Goal> goals){
         this.getContentPane().removeAll();
-        this.getContentPane().add(new MyPanel(nodes,goals));
+        MyPanel contentPanel = new MyPanel(nodes,goals);
+        JScrollPane scroll = new JScrollPane(contentPanel);
+        scroll.setAutoscrolls(true);
+        scroll.setViewportView(contentPanel);
+        this.getContentPane().add (scroll);
         this.pack();
     }
 }
