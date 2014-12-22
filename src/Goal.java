@@ -1,25 +1,19 @@
 public class Goal {
     private final String description;
     private final Node end;
-    private final String name;
     private final int points;
     private final Node start;
 
 
-    public Goal(String name, String description, int points, Node start, Node end) {
-        this.name = name;
-        this.description = description;
+    public Goal(int points, Node start, Node end) {
         this.points = points;
         this.start = start;
         this.end = end;
+        this.description = "Move a train from " + this.start.getName() + " to " + this.end.getName();
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getPoints() {

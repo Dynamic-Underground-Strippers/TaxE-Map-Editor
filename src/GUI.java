@@ -12,6 +12,7 @@ public class GUI extends JFrame {
 	Rectangle mostRecentRect=null;
 	ArrayList<Rect> connectionClicks = new ArrayList<Rect>();
 	ArrayList<ArrayList<Connection>> connections = new ArrayList<ArrayList<Connection>>();
+	ArrayList<Goal> goals = new ArrayList<Goal>();
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
@@ -55,9 +56,17 @@ public class GUI extends JFrame {
 						loadDialog.dispose();
 						repaint();
 					}
-				} else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-					ctrlClicked = true;
-				} else if (e.getKeyCode() == KeyEvent.VK_R){
+				}else if (e.getKeyCode() == KeyEvent.VK_G) {
+					// Saves the current map
+					if (ctrlClicked) {
+						EditGoals goalsDialog = new EditGoals(nodes,goals);
+						if (goalsDialog.getCurrentGoals()!=null){
+							goals = goalsDialog.getCurrentGoals();
+						}
+						goalsDialog.dispose();
+					}
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_R){
 					//Resets the map to original state
 					if (ctrlClicked){
 						nodes.clear();
@@ -65,8 +74,10 @@ public class GUI extends JFrame {
 						repaint();
 					}
 				}
+				else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					ctrlClicked = true;
+				}
 			}
-
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
@@ -109,7 +120,8 @@ public class GUI extends JFrame {
 								nodes.set(currentIndex,editDialog.getStoredNode());
 							}
 							else{
-								//Deletes the node
+								//Deletes the node]
+								//TODO: delete any goal associated with this node
 								for (int i = 0;i<nodes.size();i++)
 									connections.get(i).remove(currentIndex);
 								nodes.remove(currentIndex);

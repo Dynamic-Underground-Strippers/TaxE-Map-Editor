@@ -49,14 +49,27 @@ public class EditNode extends JDialog{
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (cbType.getSelectedItem().toString()=="Station") {
-                        Station tempNode = new Station(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
-                        setStoredNode(tempNode);
-                    }else{
-                        Junction tempNode = new Junction(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
-                        setStoredNode(tempNode);
+                    boolean valid = true;
+                    if (tbName.getText().equals("")){
+                        JOptionPane.showMessageDialog(EditNode.this,"Please enter a name for the node", "No Node Name Entered", JOptionPane.PLAIN_MESSAGE);
+                        valid = false;
                     }
-                    Close();
+                    try{
+                        new Point(tbLocation.getText());
+                    } catch(Exception ex){
+                        JOptionPane.showMessageDialog(EditNode.this,"Invalid format for the location", "Invalid Location", JOptionPane.PLAIN_MESSAGE);
+                        valid = false;
+                    }
+                    if (valid) {
+                        if (cbType.getSelectedItem().toString() == "Station") {
+                            Station tempNode = new Station(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
+                            setStoredNode(tempNode);
+                        } else {
+                            Junction tempNode = new Junction(node.getId(), tbName.getText(), new Point(tbLocation.getText()));
+                            setStoredNode(tempNode);
+                        }
+                        Close();
+                    }
                 }
             });
 
