@@ -15,9 +15,11 @@ public class SaveFile extends JDialog {
     public boolean okClicked = false;
     private ArrayList<Node> nodes;
     private ArrayList<ArrayList<Connection>> connections;
-    public SaveFile(ArrayList<Node> nodes,ArrayList<ArrayList<Connection>> connections){
+    private ArrayList<Goal> goals;
+    public SaveFile(ArrayList<Node> nodes,ArrayList<ArrayList<Connection>> connections,ArrayList<Goal> goals){
         this.nodes = nodes;
         this.connections=connections;
+        this.goals = goals;
         this.setModal(true);
         this.getContentPane().add (new SavePanel());
         this.pack();
@@ -93,6 +95,7 @@ public class SaveFile extends JDialog {
             JSONObject mapJSON = new JSONObject();
             JSONArray connectionJSON = new JSONArray();
             JSONArray nodeListJSON = new JSONArray();
+            JSONArray goalListJSON = new JSONArray();
 
             for (Node n : this.nodes) {
                 JSONObject node = new JSONObject();
@@ -107,23 +110,31 @@ public class SaveFile extends JDialog {
                 nodeListJSON.add(node);
             }
 
-            for (ArrayList<Connection> innerArray:connections){
+            for (ArrayList<Connection> innerArray:connections) {
                 JSONArray innerArrayJSON = new JSONArray();
-                for (int i = 0;i<innerArray.size();i++){
-                    if (innerArray.get(i)==null){
+                for (int i = 0; i < innerArray.size(); i++) {
+                    if (innerArray.get(i) == null) {
                         innerArrayJSON.add(null);
-                    }else{
+                    } else {
                         innerArrayJSON.add(new Integer(innerArray.get(i).getDistance()));
                     }
-
                 }
                 connectionJSON.add(innerArrayJSON);
             }
 
+            for (Goal goal:this.goals){
+                JSONObject goalJSON = new JSONObject();
+                goalJSON.put("points",goal.getPoints());
+                goalJSON.put("start",goal.getStart().getName().toString());
+                goalJSON.put("end",goal.getEnd().getName().toString());
+                goalListJSON.add(goalJSON);
+            }
+
             mapJSON.put("nodes",nodeListJSON);
             mapJSON.put("connections",connectionJSON);
-
+            mapJSON.put("goals",goalListJSON);
             FileWriter file = new FileWriter(fileName);
+
             try {
                 file.write(mapJSON.toJSONString());
             } catch (IOException e) {
@@ -133,6 +144,7 @@ public class SaveFile extends JDialog {
                 file.flush();
                 file.close();
             }
+
         }else{
             //Print message or return error if nothing to save
         }

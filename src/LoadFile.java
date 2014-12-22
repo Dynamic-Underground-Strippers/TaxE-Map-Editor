@@ -81,6 +81,7 @@ public class LoadFile extends JDialog {
         }
     }
     private void load(String fileName){
+        //TODO: Add loading of goals
         ArrayList<Node> loadedNodes = new ArrayList<Node>();
         ArrayList<ArrayList<Connection>> loadedConnections = new ArrayList<ArrayList<Connection>>();
         JSONParser parser = new JSONParser();
