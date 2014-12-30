@@ -104,7 +104,7 @@ public class EditGoals extends JDialog{
             btnDelete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    deleteRow(Math.floorDiv(((JComponent)e.getSource()).getY(),30));
+                    deleteRow((int) Math.floor(((JComponent)e.getSource()).getY()/30));
                 }
             });
            /* cbStart.addActionListener(new ActionListener() {
@@ -162,9 +162,9 @@ public class EditGoals extends JDialog{
             int pointField = 0;
             for (int i=1;i<(this.getComponentCount()-2);i++){
                 if (i%7==1){
-                    startField = ((JComboBox<String>) this.getComponent(i)).getSelectedItem().toString();
+                    startField = ((JComboBox) this.getComponent(i)).getSelectedItem().toString();
                 } else if(i%7==3){
-                    endField = ((JComboBox<String>) this.getComponent(i)).getSelectedItem().toString();
+                    endField = ((JComboBox) this.getComponent(i)).getSelectedItem().toString();
                 } else if(i%7==5){
                     try {
                         pointField = Integer.valueOf(((JTextField) this.getComponent(i)).getText());

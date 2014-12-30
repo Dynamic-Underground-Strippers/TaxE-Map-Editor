@@ -13,6 +13,8 @@ public class GUI extends JFrame {
 	ArrayList<Rect> connectionClicks = new ArrayList<Rect>();
 	ArrayList<ArrayList<Connection>> connections = new ArrayList<ArrayList<Connection>>();
 	ArrayList<Goal> goals = new ArrayList<Goal>();
+	public int width = getWidth();
+	public int height = getHeight();
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
