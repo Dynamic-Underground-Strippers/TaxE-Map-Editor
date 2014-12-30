@@ -6,8 +6,9 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class EditGoals extends JDialog{
-    private ArrayList<Goal> currentGoals=null;
+    private ArrayList<Goal> currentGoals;
     public EditGoals(ArrayList<Node> nodes, ArrayList<Goal> goals){
+        setCurrentGoals(goals);
         this.setModal(true);
         this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
         MyPanel contentPanel = new MyPanel(nodes,goals);
@@ -33,13 +34,17 @@ public class EditGoals extends JDialog{
         private JButton btnAdd;
         private JButton btnOK;
         private JButton btnCancel;
-        private ArrayList<Goal> currentGoals;
-        private ArrayList<Node> currentNodes;
+        private ArrayList<Goal> tempGoals;
+        private ArrayList<Node> tempNodes;
         public MyPanel(ArrayList<Node> nodes, ArrayList<Goal> goals) {
-            currentGoals= goals;
-            currentNodes = nodes;
+            this.tempGoals= new ArrayList<Goal>();
+            //Unable to set tempGoals to equal goals because it uses it as a reference variable for whatever reason. Both ArrayLists are at the same memory address,
+            //therefore a copy is created by adding all of the contents of the original arraylist to the temporary copy.
+            for (Goal goal: goals){
+                tempGoals.add(goal);
+            }
+            this.tempNodes = nodes;
             setLayout(null);
-            //TODO: Make this iterative for every goal
             ArrayList<String> initialNodeNames = new ArrayList<String>();
             for (int i = 0;i<nodes.size();i++){
                 if (nodes.get(i) instanceof Station) {
@@ -47,7 +52,7 @@ public class EditGoals extends JDialog{
                 }
             }
             final ArrayList<String> nodeNames = initialNodeNames;
-            for (Goal goal: currentGoals){
+            for (Goal goal: tempGoals){
                 addRow(goal,nodeNames,starty);
                 starty += 30;
             }
@@ -57,8 +62,9 @@ public class EditGoals extends JDialog{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     saveGoals();
-                    currentGoals.add(null);
-                    redraw(currentNodes,currentGoals);
+                    tempGoals.add(null);
+                    redraw(tempNodes,tempGoals);
+
                 }
             });
             btnOK = new JButton("OK");
@@ -74,7 +80,7 @@ public class EditGoals extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     saveGoals();
                     boolean valid = true;
-                    for (Goal goal:currentGoals){
+                    for (Goal goal:tempGoals){
                         if (goal.getStart()==goal.getEnd()){
                             valid = false;
                         } else if (goal.getPoints()==0){
@@ -82,11 +88,17 @@ public class EditGoals extends JDialog{
                         }
                     }
                     if (valid){
-                        setCurrentGoals(currentGoals);
+                        setCurrentGoals(tempGoals);
                         close();
                     } else{
                         JOptionPane.showMessageDialog(EditGoals.this,"Please ensure that all goals have a points value of >0 and that no goal has the same start and end point", "Invalid Goals Detected", JOptionPane.PLAIN_MESSAGE);
                     }
+                }
+            });
+            btnCancel.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   close();
                 }
             });
         }
@@ -107,26 +119,6 @@ public class EditGoals extends JDialog{
                     deleteRow((int) Math.floor(((JComponent)e.getSource()).getY()/30));
                 }
             });
-           /* cbStart.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ((JComboBox<String>) MyPanel.this.getComponentAt(180,starty)).removeAllItems();
-                    for (String node : nodeNames) {
-                        ((JComboBox<String>) MyPanel.this.getComponentAt(180,starty)).addItem(node);
-                    }
-                    ((JComboBox<String>) MyPanel.this.getComponentAt(180,starty)).removeItem(((JComboBox<String>) MyPanel.this.getComponentAt(40,starty)).getSelectedItem());
-                }
-            });
-            cbEnd.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ((JComboBox<String>) MyPanel.this.getComponentAt(40,starty)).removeAllItems();
-                    for (String node:nodeNames) {
-                        ((JComboBox<String>) MyPanel.this.getComponentAt(40,starty)).addItem(node);
-                    }
-                    ((JComboBox<String>) MyPanel.this.getComponentAt(40,starty)).removeItem(((JComboBox<String>) MyPanel.this.getComponentAt(180,starty)).getSelectedItem());
-                }
-            });*/
             if (goal != null){
                 cbStart.setSelectedItem(goal.getStart().getName());
                 cbEnd.setSelectedItem(goal.getEnd().getName());
@@ -152,11 +144,12 @@ public class EditGoals extends JDialog{
 
         private void deleteRow(int rowIndex){
             saveGoals();
-            currentGoals.remove(rowIndex);
-            redraw(currentNodes,currentGoals);
+           tempGoals.remove(rowIndex);
+            redraw(tempNodes,tempGoals);
         }
+
         private void saveGoals(){
-            currentGoals.clear();
+            tempGoals.clear();
             String startField = "";
             String endField = "";
             int pointField = 0;
@@ -174,7 +167,7 @@ public class EditGoals extends JDialog{
                 } else if (i%7==0){
                     Node startNode=null;
                     Node endNode=null;
-                    for (Node node:currentNodes){
+                    for (Node node:tempNodes){
                         if (node.getName() == startField){
                             startNode = node;
                         }
@@ -183,7 +176,7 @@ public class EditGoals extends JDialog{
                         }
                     }
                     Goal tempGoal = new Goal(pointField,startNode,endNode);
-                    currentGoals.add(tempGoal);
+                    tempGoals.add(tempGoal);
                 }
 
             }

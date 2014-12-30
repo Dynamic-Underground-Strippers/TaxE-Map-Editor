@@ -13,8 +13,7 @@ public class GUI extends JFrame {
 	ArrayList<Rect> connectionClicks = new ArrayList<Rect>();
 	ArrayList<ArrayList<Connection>> connections = new ArrayList<ArrayList<Connection>>();
 	ArrayList<Goal> goals = new ArrayList<Goal>();
-	public int width = getWidth();
-	public int height = getHeight();
+
 	public GUI() {
 		mapImage = new ImageIcon(getClass().getClassLoader().getResource("map.png")).getImage();
 		addKeyListener(new KeyListener() {
@@ -24,14 +23,11 @@ public class GUI extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) mostRecentRect = null;
-				else if (e.getKeyCode() == KeyEvent.VK_Z) {
-					//Undo
-					if (ctrlClicked) {
-						nodes.remove(nodes.size() - 1);
-						repaint();
-					}
-				} else if (e.getKeyCode() == KeyEvent.VK_E) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+					//Clears the currently selected node
+					mostRecentRect = null;
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_E) {
 					//Edits all nodes
 					if (ctrlClicked) {
 						EditAllNodes editDialog = new EditAllNodes(nodes);
@@ -60,12 +56,10 @@ public class GUI extends JFrame {
 						repaint();
 					}
 				}else if (e.getKeyCode() == KeyEvent.VK_G) {
-					// Saves the current map
+					// Edits the current goals
 					if (ctrlClicked) {
 						EditGoals goalsDialog = new EditGoals(nodes,goals);
-						if (goalsDialog.getCurrentGoals()!=null){
-							goals = goalsDialog.getCurrentGoals();
-						}
+						goals = goalsDialog.getCurrentGoals();
 						goalsDialog.dispose();
 					}
 				}
@@ -74,16 +68,19 @@ public class GUI extends JFrame {
 					if (ctrlClicked){
 						nodes.clear();
 						connections.clear();
+						goals.clear();
 						repaint();
 					}
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					//Necessary to keep track of whether control is pressed for ctrl+KEY hotkeys
 					ctrlClicked = true;
 				}
 			}
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					//Necessary to keep track of whether control is pressed for ctrl+KEY hotkeys
 					ctrlClicked = false;
 				}
 			}
@@ -93,16 +90,18 @@ public class GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean rectClicked = false;
-
+				//Checks whether a node or connection has been clicked
 				for (Rectangle rect : nodeClicks) {
 					if (rect.contains(e.getPoint())) {
 						rectClicked = true;
 
 						if (e.getButton() == MouseEvent.BUTTON1) {
 							if (mostRecentRect == null){
+								//Sets the most recently clicked node to be the node that was clicked to allow creation of connections
 								mostRecentRect = rect;
 							}
 							else if (rect!=mostRecentRect){
+								//If the node clicked isn't equal to the node that was clicked most recently then the connection creation dialog is initiated
 								int mostRecentIndex = nodeClicks.indexOf(mostRecentRect);
 								int currentIndex = nodeClicks.indexOf(rect);
 								mostRecentRect = null;
@@ -117,13 +116,14 @@ public class GUI extends JFrame {
 							}
 						}
 						else if (e.getButton() == MouseEvent.BUTTON3) {
+							//If the node is right clicked then a node editing dialog is initiated
 							int currentIndex = nodeClicks.indexOf(rect);
 							EditNode editDialog = new EditNode(nodes.get(currentIndex));
 							if (editDialog.getStoredNode()!=null){
 								nodes.set(currentIndex,editDialog.getStoredNode());
 							}
 							else{
-								//Deletes the node]
+								//Deletes the node
 								//TODO: delete any goal associated with this node
 								for (int i = 0;i<nodes.size();i++)
 									connections.get(i).remove(currentIndex);
@@ -137,10 +137,12 @@ public class GUI extends JFrame {
 					}
 				}
 				if (!rectClicked) {
+					//If a node is not clicked then all connections are checked
 					for (Rect rect : connectionClicks) {
 						if (rect.contains(e.getPoint())) {
 							rectClicked = true;
 							if (e.getButton() == MouseEvent.BUTTON3) {
+								//If a connection is right clicked then the editing dialog is initiated
 								Connection clickedConnection = connections.get(rect.getStartIndex()).get(rect.getEndIndex());
 								EditConnection editConnection = new EditConnection(clickedConnection);
 								connections.get(rect.getStartIndex()).set(rect.getEndIndex(), editConnection.getStoredConnection());
@@ -152,6 +154,7 @@ public class GUI extends JFrame {
 					}
 				}
 				if ((!rectClicked) && (e.getButton() == MouseEvent.BUTTON1)) {
+					//If no elements are clicked and the user left clicks on the map then a node is created
 					Point p = new Point((float) e.getX() / (float) getWidth(), (float) e.getY() / (float) getHeight());
 					NodeDetails nodeDialog = new NodeDetails(nodes.size(), p);
 					if (nodeDialog.getStoredNode() != null) {
@@ -199,27 +202,41 @@ public class GUI extends JFrame {
 
 	@Override
 	public void paint(Graphics g) {
+		//Resets click detection rectangles
 		nodeClicks.clear();
 		connectionClicks.clear();
+
+		//Draws the map onto the JFrame
 		g.clearRect(0, 0, getWidth(), getHeight());
 		int imageWidth = (int) ((float) mapImage.getWidth(this) * ((float) getHeight() / (float) mapImage.getHeight(this)));
 		g.drawImage(mapImage, getWidth() - imageWidth, 0, imageWidth, getHeight(), this);
+
+		//Generates the font for the connection distance text
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+
+		//Measures the metrics of the text to allow the connection lengths to be positioned appropriately
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
 		int fontHeight = metrics.getHeight();
 
+		//Draws each node
 		for (Node n : nodes) {
+			//Changes colour of node based on whether it is a station or junction
 			if (n instanceof Station){
+				//Edit here to change colour of Stations
 				g.setColor(Color.MAGENTA);
 			} else{
+				//Edit here to change colour of Junctions
 				g.setColor(Color.GREEN);
 			}
 			g.fillOval((int) (n.getLocation().getX() * getWidth()) - 10, (int) (n.getLocation().getY() * getHeight()) - 10, 20, 20);
+
+			//Generates the rectangle required for click detection
 			Rectangle rect = new Rectangle((int) (n.getLocation().getX() * getWidth()) - 10, (int)(n.getLocation().getY() * getHeight()) - 10, 20, 20);
 			nodeClicks.add(rect);
 		}
 
+		//This code draws each connection on the map
 		for (int x=0; x<nodes.size();x++) {
 			for (int y = x; y < nodes.size(); y++) {
 				if (connections.get(x).get(y) != null) {
@@ -228,10 +245,16 @@ public class GUI extends JFrame {
 					int endx = (int) nodeClicks.get(y).getLocation().getX() + 10;
 					int endy = (int) nodeClicks.get(y).getLocation().getY() + 10;
 					int fontWidth =  metrics.stringWidth(String.valueOf(connections.get(x).get(y).getDistance()));
+
+					//Draws the line for the connection
 					g.setColor(Color.BLUE);
 					g.drawLine(startx, starty, endx, endy);
+
+					//Generates the rectangle required for click detection
 					Rect rect = new Rect(((startx + endx) / 2),(((starty + endy) / 2)-fontHeight)+3,fontWidth,fontHeight,x,y);
 					connectionClicks.add(rect);
+
+					//Draws the text showing the length of the connection onto the middle of the line
 					g.setColor(Color.BLACK);
 					g.drawString(String.valueOf(connections.get(x).get(y).getDistance()), (startx + endx) / 2, (starty + endy) / 2);
 				}
@@ -239,6 +262,7 @@ public class GUI extends JFrame {
 		}
 	}
 	private void rebalanceIDs(){
+		//This method is used to ensure there are no wasted ID values (i.e uses all of 0 to nodes.size())
 		for (int i = 0;i<nodes.size();i++){
 			nodes.get(i).setId(i);
 		}

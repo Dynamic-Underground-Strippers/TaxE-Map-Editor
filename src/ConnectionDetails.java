@@ -34,30 +34,32 @@ public class ConnectionDetails extends JDialog {
             jcomp3 = new JLabel ("Distance:");
             btnOK = new JButton ("OK");
             btnCancel = new JButton ("Cancel");
+
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    storedConnection = new Connection(Integer.parseInt(tbDistance.getText()));
-                    NodeDetailsPanel.this.Close();
+                    //Creates a connection based on the parameters specified by the user
+                    if (Integer.parseInt(tbDistance.getText())>0) {
+                        storedConnection = new Connection(Integer.parseInt(tbDistance.getText()));
+                        NodeDetailsPanel.this.Close();
+                    }else{
+
+                    }
                 }
             });
+
             btnCancel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Close();
                 }
             });
-            //adjust size and set layout
             setPreferredSize(new Dimension(257, 80));
             setLayout (null);
-
-            //add components
             add (tbDistance);
             add (jcomp3);
             add (btnOK);
             add (btnCancel);
-
-            //set component bounds (only needed by Absolute Positioning)
             tbDistance.setBounds (115, 10, 100, 25);
             jcomp3.setBounds(10, 10, 100, 25);
             btnOK.setBounds (50, 50, 100, 25);
