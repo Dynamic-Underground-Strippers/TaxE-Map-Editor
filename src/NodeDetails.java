@@ -46,13 +46,20 @@ public class NodeDetails extends JDialog {
             btnOK.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (cbType.getSelectedItem().toString()=="Station"){
-                        storedNode = new Station(id,tbName.getText(),location);
-                    } else{
-                        storedNode = new Junction(id,tbName.getText(),location);
+                    boolean valid = true;
+                    if (tbName.getText().equals("")){
+                        JOptionPane.showMessageDialog(NodeDetails.this,"Please enter a name for the node", "No Node Name Entered", JOptionPane.PLAIN_MESSAGE);
+                        valid = false;
+                    }
+                    if (valid) {
+                        if (cbType.getSelectedItem().toString() == "Station") {
+                            storedNode = new Station(id, tbName.getText(), location);
+                        } else {
+                            storedNode = new Junction(id, tbName.getText(), location);
+                        }
+                        NodeDetailsPanel.this.Close();
                     }
 
-                    NodeDetailsPanel.this.Close();
                 }
             });
             btnCancel.addActionListener(new ActionListener() {
@@ -62,10 +69,10 @@ public class NodeDetails extends JDialog {
                 }
             });
             setPreferredSize(new Dimension(257, 124));
-            setLayout (null);
+            setLayout(null);
             add (tbName);
-            add (cbType);
-            add (jcomp3);
+            add(cbType);
+            add(jcomp3);
             add (jcomp4);
             add (btnOK);
             add (btnCancel);
