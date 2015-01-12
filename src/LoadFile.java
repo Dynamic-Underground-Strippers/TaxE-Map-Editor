@@ -119,7 +119,7 @@ public class LoadFile extends JDialog {
                 loadedConnections.add(innerList);
             }
             for (int i =0; i<goalList.size();i++){
-                JSONObject goalJSON = (JSONObject) nodeList.get(i);
+                JSONObject goalJSON = (JSONObject) goalList.get(i);
                 Node startNode=null;
                 Node endNode=null;
                 for (Node node: loadedNodes){
